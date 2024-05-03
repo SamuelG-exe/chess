@@ -38,6 +38,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        ///add peices
         gameBoard = new ChessPiece[8][8];
 
     }

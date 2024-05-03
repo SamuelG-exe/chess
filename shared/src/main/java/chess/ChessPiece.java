@@ -8,10 +8,22 @@ import java.util.Collection;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
+
 public class ChessPiece {
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
     }
+
 
     /**
      * The various different chess piece options
@@ -47,6 +59,21 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(myPosition);
+
+        if (piece.getPieceType() == PieceType.KING){
+            for (int xmove = myPosition.getRow()-1, endx = xmove + 1; xmove<endx; xmove++){
+                for (int ymove = myPosition.getRow()-1, endy = xmove + 1; ymove<endy; ymove++){
+                    ChessPosition checkpos= new ChessPosition(xmove, ymove);
+                    if  (   xmove <=8 && xmove >=0 &&
+                            ymove <=8 && ymove >=0 &&
+                            board.getPiece(checkpos)==null){
+                        ///need to finish
+                    }
+                }
+            }
+        }
+
+
     }
 }
