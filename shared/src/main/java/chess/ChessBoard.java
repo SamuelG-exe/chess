@@ -81,4 +81,11 @@ public class ChessBoard {
         resethelperBackrow(8, ChessGame.TeamColor.WHITE);
 
     }
+
+    public boolean onBoard(ChessPosition location){
+        return location.getRow() < 8 && location.getRow() > 0 && location.getColumn() < 8 && location.getColumn() > 0;
+    }
+    public boolean validMove(ChessPosition startPosition, ChessPosition endPosition){
+        return (getPiece(endPosition) == null || getPiece(endPosition).getTeamColor() != getPiece(startPosition).getTeamColor());
+    }
 }
