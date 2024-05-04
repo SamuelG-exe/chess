@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Arrays;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -7,7 +9,7 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] gameBoard = new ChessPiece[8][8];
+    private ChessPiece[][] gameBoard = new ChessPiece[9][9];
     public ChessBoard() {
         
     }
@@ -34,35 +36,35 @@ public class ChessBoard {
     }
 
     void resethelperPawn(int row, ChessGame.TeamColor pieceColor){
-        for (int i = 0; i < 8; i++){
+        for (int i = 1; i <= 8; i++){
             ChessPosition pieceAdder= new ChessPosition(row, i);
             addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.PAWN));
         }
 
     }
     void resethelperBackrow(int row, ChessGame.TeamColor pieceColor){
-        ChessPosition pieceAdder= new ChessPosition(row, 0);
+        ChessPosition pieceAdder= new ChessPosition(row, 1);
         addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.ROOK));
 
-        pieceAdder= new ChessPosition(row, 1);
-        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KNIGHT));
-
         pieceAdder= new ChessPosition(row, 2);
-        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.BISHOP));
+        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KNIGHT));
 
         pieceAdder= new ChessPosition(row, 3);
-        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.QUEEN));
-
-        pieceAdder= new ChessPosition(row, 4);
-        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KING));
-
-        pieceAdder= new ChessPosition(row, 5);
         addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.BISHOP));
 
+        pieceAdder= new ChessPosition(row, 4);
+        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.QUEEN));
+
+        pieceAdder= new ChessPosition(row, 5);
+        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KING));
+
         pieceAdder= new ChessPosition(row, 6);
-        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KNIGHT));
+        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.BISHOP));
 
         pieceAdder= new ChessPosition(row, 7);
+        addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KNIGHT));
+
+        pieceAdder= new ChessPosition(row, 8);
         addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.ROOK));
     }
 
@@ -70,15 +72,16 @@ public class ChessBoard {
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      *
+     *
      */
     public void resetBoard() {
         ///Reset Black
-        resethelperBackrow(0, ChessGame.TeamColor.BLACK);
-        resethelperPawn(1, ChessGame.TeamColor.BLACK);
+        resethelperBackrow(7, ChessGame.TeamColor.BLACK);
+        resethelperPawn(8, ChessGame.TeamColor.BLACK);
 
         ///Reset White
-        resethelperPawn(7, ChessGame.TeamColor.WHITE);
-        resethelperBackrow(8, ChessGame.TeamColor.WHITE);
+        resethelperPawn(1, ChessGame.TeamColor.WHITE);
+        resethelperBackrow(0, ChessGame.TeamColor.WHITE);
 
     }
 
@@ -88,4 +91,19 @@ public class ChessBoard {
     public boolean validMove(ChessPosition startPosition, ChessPosition endPosition){
         return (getPiece(endPosition) == null || getPiece(endPosition).getTeamColor() != getPiece(startPosition).getTeamColor());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Arrays.equals(gameBoard, that.gameBoard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(gameBoard);
+    }
 }
+
+
