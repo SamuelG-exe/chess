@@ -23,7 +23,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        System.out.println(position.getRow()+" "+position.getColumn());
+        //System.out.println(position.getRow()+" "+position.getColumn());
         gameBoard[abs(position.getRow()-8)][position.getColumn()-1] = piece;
     }
 
@@ -80,15 +80,15 @@ public class ChessBoard {
     public void resetBoard() {
         ChessPiece[][] gameBoard = new ChessPiece[8][8];
         ///Reset Black
-        System.out.println("Statring backline Black");
+        //System.out.println("Statring backline Black");
         resethelperBackrow(8, ChessGame.TeamColor.BLACK);
-        System.out.println("Starting front line Black");
+        //System.out.println("Starting front line Black");
         resethelperPawn(7, ChessGame.TeamColor.BLACK);
 
         ///Reset White
-        System.out.println("Starting front line White");
+        //System.out.println("Starting front line White");
         resethelperPawn(2, ChessGame.TeamColor.WHITE);
-        System.out.println("Starting back line white");
+        //System.out.println("Starting back line white");
         resethelperBackrow(1, ChessGame.TeamColor.WHITE);
 
     }
@@ -102,10 +102,16 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Arrays.equals(gameBoard, that.gameBoard);
+        for (int i=0; i <= 7; i++){
+           for (int j=0; j <= 7; j++){
+                if (that.gameBoard[i][j] == gameBoard[i][j] ||
+                        (that.gameBoard[i][j].getPieceType() == gameBoard[i][j].getPieceType() && that.gameBoard[i][j].getTeamColor() == gameBoard[i][j].getTeamColor())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

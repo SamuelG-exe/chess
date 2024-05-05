@@ -26,8 +26,3 @@ public class MovesKing {
 }
 
 
-
-/// previouse checks xmove <= 8 && xmove >= 0 &&
-//                        ymove <= 8 && ymove >= 0 &&
-//                        board.getPiece(checkpos) == null ||
-//                        board.getPiece(checkpos).getTeamColor() != piece.getTeamColor())
