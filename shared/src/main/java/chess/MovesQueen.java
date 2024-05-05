@@ -9,6 +9,7 @@ public class MovesQueen {
         Collection<ChessMove> bishop = new ArrayList<>();
         Collection<ChessMove> rook = new ArrayList<>();
         bishop = MovesBishop.bishopMove(board, myPosition);
+        rook = MovesRook.rookMove(board, myPosition);
         bishop.addAll(rook);
         return bishop;
     }

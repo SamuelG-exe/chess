@@ -23,7 +23,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        ///System.out.println(position.getRow()+" "+position.getColumn());
+        System.out.println(position.getRow()+" "+position.getColumn());
         gameBoard[abs(position.getRow()-8)][position.getColumn()-1] = piece;
     }
 
@@ -78,7 +78,7 @@ public class ChessBoard {
      *
      */
     public void resetBoard() {
-        gameBoard = new ChessPiece[8][8];
+        ChessPiece[][] gameBoard = new ChessPiece[8][8];
         ///Reset Black
         System.out.println("Statring backline Black");
         resethelperBackrow(8, ChessGame.TeamColor.BLACK);
