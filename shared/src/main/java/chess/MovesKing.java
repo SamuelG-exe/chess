@@ -15,7 +15,7 @@ public class MovesKing {
                 ChessPosition checkpos = new ChessPosition(ymove, xmove);
                 if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos)) {
                     System.out.println(ymove +" "+ xmove);
-                    ChessMove move = new ChessMove(myPosition, checkpos, piece.getPieceType());
+                    ChessMove move = new ChessMove(myPosition, checkpos, null);
                     validMoves.add(move);
                 }
             }

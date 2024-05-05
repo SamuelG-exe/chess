@@ -5,36 +5,33 @@ import java.util.Collection;
 import java.util.List;
 
 public class MovesRook {
-    public Collection<ChessMove> Rook(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> validMoves = new ArrayList<>();
+    public static Collection<ChessMove> rookMove(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> validMoves = new ArrayList<>();
         ChessPiece piece = board.getPiece(myPosition);
+        boolean up = true;
+        boolean left = true;
+        boolean right = true;
+        boolean down = true;
 
         for(int i = 1; i<8; i++){
             ///going Up
             ChessPosition checkpos = new ChessPosition(myPosition.getRow()+i, myPosition.getColumn());
-            if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos)){
-                ChessMove move = new ChessMove(myPosition, checkpos, piece.getPieceType());
-                validMoves.add(move);
-            }
+            up = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, up, checkpos);
+
             ///going down
             checkpos = new ChessPosition(myPosition.getRow()-i, myPosition.getColumn());
-            if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos)){
-                ChessMove move = new ChessMove(myPosition, checkpos, piece.getPieceType());
-                validMoves.add(move);
-            }
+            down = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, down, checkpos);
+
             ///going Right
             checkpos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+i);
-            if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos)){
-                ChessMove move = new ChessMove(myPosition, checkpos, piece.getPieceType());
-                validMoves.add(move);
-            }
+            right = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, right, checkpos);
+
             ///going Left
             checkpos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-i);
-            if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos)){
-                ChessMove move = new ChessMove(myPosition, checkpos, piece.getPieceType());
-                validMoves.add(move);
-            }
+            left = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, left, checkpos);
+
         }
         return validMoves;
     }
+
 }

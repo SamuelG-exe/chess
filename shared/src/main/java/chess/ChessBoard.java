@@ -81,20 +81,20 @@ public class ChessBoard {
         gameBoard = new ChessPiece[8][8];
         ///Reset Black
         System.out.println("Statring backline Black");
-        resethelperBackrow(1, ChessGame.TeamColor.BLACK);
+        resethelperBackrow(8, ChessGame.TeamColor.BLACK);
         System.out.println("Starting front line Black");
-        resethelperPawn(2, ChessGame.TeamColor.BLACK);
+        resethelperPawn(7, ChessGame.TeamColor.BLACK);
 
         ///Reset White
         System.out.println("Starting front line White");
-        resethelperPawn(7, ChessGame.TeamColor.WHITE);
+        resethelperPawn(2, ChessGame.TeamColor.WHITE);
         System.out.println("Starting back line white");
-        resethelperBackrow(8, ChessGame.TeamColor.WHITE);
+        resethelperBackrow(1, ChessGame.TeamColor.WHITE);
 
     }
 
     public boolean onBoard(ChessPosition location){
-        return location.getRow() < 8 && location.getRow() > 0 && location.getColumn() < 8 && location.getColumn() > 0;
+        return location.getRow() <= 8 && location.getRow() >= 1 && location.getColumn() <= 8 && location.getColumn() >= 1;
     }
     public boolean validMove(ChessPosition startPosition, ChessPosition endPosition){
         return (getPiece(endPosition) == null || getPiece(endPosition).getTeamColor() != getPiece(startPosition).getTeamColor());

@@ -65,12 +65,15 @@ public class ChessPiece {
             case KING:
                 return MovesKing.kingMove(board, myPosition);
             case QUEEN:
-                //return MovesQueen.Queenmove(board, myPosition);
+                return MovesQueen.queenMove(board, myPosition);
             case BISHOP:
                 return MovesBishop.bishopMove(board, myPosition);
             case KNIGHT:
+                return MovesKnight.kightMove(board, myPosition);
             case ROOK:
+                return MovesRook.rookMove(board, myPosition);
             case PAWN:
+                return MovesPawn.pawnMove(board, myPosition);
 
         }
         return new ArrayList<>();
