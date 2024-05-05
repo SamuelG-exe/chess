@@ -2,6 +2,8 @@ package chess;
 
 import java.util.Objects;
 
+import static java.lang.Math.abs;
+
 /**
  * Represents a single square position on a chess board
  * <p>

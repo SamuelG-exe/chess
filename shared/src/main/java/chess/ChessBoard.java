@@ -2,6 +2,8 @@ package chess;
 
 import java.util.Arrays;
 
+import static java.lang.Math.abs;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -9,7 +11,7 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] gameBoard = new ChessPiece[9][9];
+    private ChessPiece[][] gameBoard = new ChessPiece[8][8];
     public ChessBoard() {
         
     }
@@ -21,7 +23,8 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        gameBoard[position.getRow()][position.getColumn()] = piece;
+        ///System.out.println(position.getRow()+" "+position.getColumn());
+        gameBoard[abs(position.getRow()-8)][position.getColumn()-1] = piece;
     }
 
     /**
@@ -32,7 +35,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return gameBoard[position.getRow()][position.getColumn()];
+        return gameBoard[abs(position.getRow()-8)][position.getColumn()-1];
     }
 
     void resethelperPawn(int row, ChessGame.TeamColor pieceColor){
@@ -75,13 +78,18 @@ public class ChessBoard {
      *
      */
     public void resetBoard() {
+        gameBoard = new ChessPiece[8][8];
         ///Reset Black
-        resethelperBackrow(7, ChessGame.TeamColor.BLACK);
-        resethelperPawn(8, ChessGame.TeamColor.BLACK);
+        System.out.println("Statring backline Black");
+        resethelperBackrow(1, ChessGame.TeamColor.BLACK);
+        System.out.println("Starting front line Black");
+        resethelperPawn(2, ChessGame.TeamColor.BLACK);
 
         ///Reset White
-        resethelperPawn(1, ChessGame.TeamColor.WHITE);
-        resethelperBackrow(0, ChessGame.TeamColor.WHITE);
+        System.out.println("Starting front line White");
+        resethelperPawn(7, ChessGame.TeamColor.WHITE);
+        System.out.println("Starting back line white");
+        resethelperBackrow(8, ChessGame.TeamColor.WHITE);
 
     }
 
@@ -105,5 +113,4 @@ public class ChessBoard {
         return Arrays.hashCode(gameBoard);
     }
 }
-
 
