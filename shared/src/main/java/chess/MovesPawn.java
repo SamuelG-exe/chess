@@ -63,7 +63,7 @@ public class MovesPawn {
 
     private static void promote(ChessPosition myPosition, Collection<ChessMove> validMoves, ChessPosition checkpos) {
         if (checkpos.getRow() == 1 || checkpos.getRow() == 8) {
-            System.out.println(checkpos.getRow() + " " + checkpos.getColumn());
+            //System.out.println(checkpos.getRow() + " " + checkpos.getColumn());
             ChessMove move = new ChessMove(myPosition, checkpos, ChessPiece.PieceType.KNIGHT);
             validMoves.add(move);
             move = new ChessMove(myPosition, checkpos, ChessPiece.PieceType.ROOK);
@@ -73,7 +73,7 @@ public class MovesPawn {
             move = new ChessMove(myPosition, checkpos, ChessPiece.PieceType.BISHOP);
             validMoves.add(move);
         } else {
-            System.out.println(checkpos.getRow() + " " + checkpos.getColumn());
+            //System.out.println(checkpos.getRow() + " " + checkpos.getColumn());
             ChessMove move = new ChessMove(myPosition, checkpos, null);
             validMoves.add(move);
         }

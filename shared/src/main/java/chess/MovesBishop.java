@@ -5,10 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 public class MovesBishop {
+
     public static Collection<ChessMove> bishopMove(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> validMoves = new ArrayList<>();
         ChessPiece piece = board.getPiece(myPosition);
-        System.out.println("Bishop starting pos: "+myPosition.getRow()+" "+myPosition.getColumn());
+        //System.out.println("Bishop starting pos: "+myPosition.getRow()+" "+myPosition.getColumn());
         boolean rightUp = true;
         boolean rightDown = true;
         boolean leftUp = true;
@@ -37,7 +38,7 @@ public class MovesBishop {
 
     static boolean moveCheckAdder(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves, ChessPiece piece, boolean logicBool, ChessPosition checkpos) {
         if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos) && logicBool){
-            System.out.println(checkpos.getRow() +" "+ checkpos.getColumn());
+            //System.out.println(checkpos.getRow() +" "+ checkpos.getColumn());
             ChessMove move = new ChessMove(myPosition, checkpos, null);
             validMoves.add(move);
             if (board.getPiece(checkpos) != null &&(board.getPiece(checkpos).getTeamColor() != board.getPiece(myPosition).getTeamColor())){

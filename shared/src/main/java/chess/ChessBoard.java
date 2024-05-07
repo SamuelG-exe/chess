@@ -11,8 +11,9 @@ import static java.lang.Math.abs;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] gameBoard = new ChessPiece[8][8];
+    private ChessPiece[][] gameBoard;
     public ChessBoard() {
+        gameBoard = new ChessPiece[8][8];
         
     }
 
@@ -88,7 +89,7 @@ public class ChessBoard {
         ///Reset White
         //System.out.println("Starting front line White");
         resethelperPawn(2, ChessGame.TeamColor.WHITE);
-        //System.out.println("Starting back line white");
+        //System.out.println("Starting back line white")
         resethelperBackrow(1, ChessGame.TeamColor.WHITE);
 
     }
@@ -102,21 +103,37 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+            }
+        if (o == null || o.getClass() != super.getClass()) {
+            return false;
+        }
         ChessBoard that = (ChessBoard) o;
-        for (int i=0; i <= 7; i++){
-           for (int j=0; j <= 7; j++){
-                if (that.gameBoard[i][j] == gameBoard[i][j] ||
-                        (that.gameBoard[i][j].getPieceType() == gameBoard[i][j].getPieceType() && that.gameBoard[i][j].getTeamColor() == gameBoard[i][j].getTeamColor())){
-                    return true;
+        for (int i = 0; i <= 7; i++) {
+            for (int j = 0; j <= 7; j++) {
+                if (that.gameBoard[i][j] == null && gameBoard[i][j]== null){
+                    continue;
+                }
+                if (!(that.gameBoard[i][j].getPieceType() == gameBoard[i][j].getPieceType())) {
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
+
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(gameBoard);
+        return Arrays.deepHashCode(gameBoard);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "gameBoard=" + Arrays.toString(gameBoard) +
+                '}';
     }
 }
 

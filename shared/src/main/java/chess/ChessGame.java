@@ -67,7 +67,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
-    }
+    } ///if for each move other team can make is does that return the location of the king
 
     /**
      * Determines if the given team is in checkmate
@@ -96,7 +96,9 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+
+        ChessBoard setboard = new ChessBoard();
+        setboard = board;
     }
 
     /**

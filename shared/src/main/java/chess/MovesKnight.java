@@ -7,7 +7,7 @@ public class MovesKnight {
     public static Collection<ChessMove> kightMove(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> validMoves = new ArrayList<>();
         ChessPiece piece = board.getPiece(myPosition);
-        System.out.println("Kight starting pos: "+myPosition.getRow()+" "+myPosition.getColumn());
+        //System.out.println("Kight starting pos: "+myPosition.getRow()+" "+myPosition.getColumn());
 
         boolean horizontal = true;
 
@@ -31,7 +31,7 @@ public class MovesKnight {
             for (int i = -1; i<2; i=i+2) {
                 ChessPosition checkposNew = new ChessPosition(checkpos.getRow() + i, checkpos.getColumn());
                 if (board.onBoard(checkposNew) && board.validMove(myPosition, checkposNew)) {
-                    System.out.println(checkposNew.getRow() + " " + checkposNew.getColumn());
+                    //System.out.println(checkposNew.getRow() + " " + checkposNew.getColumn());
                     ChessMove move = new ChessMove(myPosition, checkposNew, null);
                     validMoves.add(move);
                 }
@@ -41,7 +41,7 @@ public class MovesKnight {
             for (int i = -1; i<=2; i+=2) {
                 ChessPosition checkposNew = new ChessPosition(checkpos.getRow(), checkpos.getColumn()+i);
                 if (board.onBoard(checkposNew) && board.validMove(myPosition, checkposNew)) {
-                    System.out.println(checkposNew.getRow() + " " + checkposNew.getColumn());
+                    //System.out.println(checkposNew.getRow() + " " + checkposNew.getColumn());
                     ChessMove move = new ChessMove(myPosition, checkposNew, null);
                     validMoves.add(move);
                 }
