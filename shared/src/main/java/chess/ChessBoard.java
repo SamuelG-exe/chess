@@ -115,6 +115,9 @@ public class ChessBoard {
                 if (that.gameBoard[i][j] == null && gameBoard[i][j]== null){
                     continue;
                 }
+                if(that.gameBoard[i][j] == null || gameBoard[i][j]== null){
+                    return false;
+                }
                 if (!(that.gameBoard[i][j].getPieceType() == gameBoard[i][j].getPieceType())) {
                     return false;
                 }

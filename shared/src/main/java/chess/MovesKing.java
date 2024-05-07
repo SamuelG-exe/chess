@@ -13,7 +13,7 @@ public class MovesKing {
         for (int xmove = myPosition.getColumn()-1 , endx = myPosition.getColumn()+ 1; xmove <= endx; xmove++) {
             for (int ymove = myPosition.getRow()-1 , endy = myPosition.getRow()+ 1; ymove <= endy; ymove++) {
                 ChessPosition checkpos = new ChessPosition(ymove, xmove);
-                if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos)) {
+                if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos) /**&& !(ChessGame.inChecker(board, myPosition, checkpos))**/) {
                     //System.out.println(ymove +" "+ xmove);
                     ChessMove move = new ChessMove(myPosition, checkpos, null);
                     validMoves.add(move);
@@ -23,6 +23,7 @@ public class MovesKing {
 
         return validMoves;
     }
+
 }
 
 
