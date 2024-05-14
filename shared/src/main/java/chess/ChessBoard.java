@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import static java.lang.Math.abs;
 
@@ -10,7 +11,7 @@ import static java.lang.Math.abs;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class ChessBoard implements Cloneable{
     private ChessPiece[][] gameBoard;
     public ChessBoard() {
         gameBoard = new ChessPiece[8][8];
@@ -79,7 +80,7 @@ public class ChessBoard {
      *
      */
     public void resetBoard() {
-        ChessPiece[][] gameBoard = new ChessPiece[8][8];
+        gameBoard = new ChessPiece[8][8];
         ///Reset Black
         //System.out.println("Statring backline Black");
         resethelperBackrow(8, ChessGame.TeamColor.BLACK);
@@ -94,6 +95,29 @@ public class ChessBoard {
 
     }
 
+    public void makeMoveOnBoard(ChessMove move)  {
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece pieceToBeMoved = getPiece(start);
+
+            if (move.getPromotionPiece()!=null) {
+                ChessPiece promotionpiecce = new ChessPiece(pieceToBeMoved.getTeamColor(), move.getPromotionPiece());
+                addPiece(end, promotionpiecce);
+                addPiece(start, null);
+            }
+            else {
+                addPiece(end, pieceToBeMoved);
+                addPiece(start, null);
+            }
+
+
+
+
+
+
+    }
+
+
     public boolean onBoard(ChessPosition location){
         return location.getRow() <= 8 && location.getRow() >= 1 && location.getColumn() <= 8 && location.getColumn() >= 1;
     }
@@ -103,13 +127,10 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-            }
-        if (o == null || o.getClass() != super.getClass()) {
+        ChessBoard that = (ChessBoard) o;
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
-        ChessBoard that = (ChessBoard) o;
         for (int i = 0; i <= 7; i++) {
             for (int j = 0; j <= 7; j++) {
                 if (that.gameBoard[i][j] == null && gameBoard[i][j]== null){
@@ -118,7 +139,7 @@ public class ChessBoard {
                 if(that.gameBoard[i][j] == null || gameBoard[i][j]== null){
                     return false;
                 }
-                if (!(that.gameBoard[i][j].getPieceType() == gameBoard[i][j].getPieceType())) {
+                if (!gameBoard[i][j].equals(that.gameBoard[i][j])) {
                     return false;
                 }
             }
@@ -138,5 +159,26 @@ public class ChessBoard {
                 "gameBoard=" + Arrays.toString(gameBoard) +
                 '}';
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        try {
+            ChessBoard clone = (ChessBoard) super.clone();
+            for (int i = 1; i <= 8; i++) {
+                for (int j = 1; j <= 8; j++) {
+                    ChessPosition iter = new ChessPosition(i, j);
+                    ChessPiece placer = this.getPiece(iter);
+                    if (placer != null) {
+                        clone.addPiece(iter, placer);
+                    }
+                }
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new CloneNotSupportedException();
+        }
+    }
+
+
 }
 

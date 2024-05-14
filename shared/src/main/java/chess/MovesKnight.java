@@ -27,6 +27,7 @@ public class MovesKnight {
         return validMoves;
     }
     public static void moverchecker (ChessBoard board, ChessPosition myPosition, ChessPosition checkpos, Collection<ChessMove> validMoves, ChessPiece piece, boolean horizontal) {
+
         if (horizontal){
             for (int i = -1; i<2; i=i+2) {
                 ChessPosition checkposNew = new ChessPosition(checkpos.getRow() + i, checkpos.getColumn());

@@ -18,30 +18,30 @@ public class MovesBishop {
         for(int i = 1; i<=8; i++){
             ///going right Up diagonal
             ChessPosition checkpos = new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()+i);
-            rightUp = moveCheckAdder(board, myPosition, validMoves, piece, rightUp, checkpos);
+            rightUp = moveCheckAdder(board, myPosition, validMoves, rightUp, checkpos);
 
             ///going left UP diagonal
             checkpos = new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()-i);
-            leftUp = moveCheckAdder(board, myPosition, validMoves, piece, leftUp, checkpos);
+            leftUp = moveCheckAdder(board, myPosition, validMoves, leftUp, checkpos);
 
             ///going Right Down diagonal
             checkpos = new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()+i);
-            rightDown = moveCheckAdder(board, myPosition, validMoves, piece, rightDown, checkpos);
+            rightDown = moveCheckAdder(board, myPosition, validMoves, rightDown, checkpos);
 
             ///going left Down diagonal
             checkpos = new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()-i);
-            leftDown = moveCheckAdder(board, myPosition, validMoves, piece, leftDown, checkpos);
+            leftDown = moveCheckAdder(board, myPosition, validMoves, leftDown, checkpos);
 
         }
         return validMoves;
     }
 
-    static boolean moveCheckAdder(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves, ChessPiece piece, boolean logicBool, ChessPosition checkpos) {
+    static boolean moveCheckAdder(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves, boolean logicBool, ChessPosition checkpos) {
         if (board.onBoard(checkpos) && board.validMove(myPosition, checkpos) && logicBool){
             //System.out.println(checkpos.getRow() +" "+ checkpos.getColumn());
             ChessMove move = new ChessMove(myPosition, checkpos, null);
             validMoves.add(move);
-            if (board.getPiece(checkpos) != null &&(board.getPiece(checkpos).getTeamColor() != board.getPiece(myPosition).getTeamColor())){
+            if (board.getPiece(checkpos) != null){
                 logicBool=false;
             }
         }

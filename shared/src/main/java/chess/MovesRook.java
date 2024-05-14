@@ -16,19 +16,19 @@ public class MovesRook {
         for(int i = 1; i<8; i++){
             ///going Up
             ChessPosition checkpos = new ChessPosition(myPosition.getRow()+i, myPosition.getColumn());
-            up = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, up, checkpos);
+            up = MovesBishop.moveCheckAdder(board, myPosition, validMoves, up, checkpos);
 
             ///going down
             checkpos = new ChessPosition(myPosition.getRow()-i, myPosition.getColumn());
-            down = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, down, checkpos);
+            down = MovesBishop.moveCheckAdder(board, myPosition, validMoves, down, checkpos);
 
             ///going Right
             checkpos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+i);
-            right = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, right, checkpos);
+            right = MovesBishop.moveCheckAdder(board, myPosition, validMoves, right, checkpos);
 
             ///going Left
             checkpos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-i);
-            left = MovesBishop.moveCheckAdder(board, myPosition, validMoves, piece, left, checkpos);
+            left = MovesBishop.moveCheckAdder(board, myPosition, validMoves, left, checkpos);
 
         }
         return validMoves;
