@@ -109,12 +109,6 @@ public class ChessBoard implements Cloneable{
                 addPiece(end, pieceToBeMoved);
                 addPiece(start, null);
             }
-
-
-
-
-
-
     }
 
 
@@ -164,6 +158,7 @@ public class ChessBoard implements Cloneable{
     public Object clone() throws CloneNotSupportedException {
         try {
             ChessBoard clone = (ChessBoard) super.clone();
+            clone.gameBoard = new ChessPiece[8][8];
             for (int i = 1; i <= 8; i++) {
                 for (int j = 1; j <= 8; j++) {
                     ChessPosition iter = new ChessPosition(i, j);

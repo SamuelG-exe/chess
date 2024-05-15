@@ -69,6 +69,7 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = gameBoard.getPiece(startPosition);
         Collection<ChessMove> posibleMoves = piece.pieceMoves(gameBoard, startPosition);
+        Collection<ChessMove> allowedMoves = piece.pieceMoves(gameBoard, startPosition);
 
         for(ChessMove move : posibleMoves){
         ChessBoard testBoard = null;
@@ -78,17 +79,18 @@ public class ChessGame {
             catch (CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }
-            ChessBoard finalTestBoard = testBoard;
-            finalTestBoard.makeMoveOnBoard(move);
-            if (inChecker(finalTestBoard, piece.getTeamColor())) {
-                posibleMoves.remove(move);
+            ///ChessBoard finalTestBoard = testBoard;
+            testBoard.makeMoveOnBoard(move);
+            if ((inChecker(testBoard, piece.getTeamColor()))) {
+                //System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn()+"this puts me in check");
+                allowedMoves.remove(move);
             }
         }
 
-        for(ChessMove move : posibleMoves){
-            System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn());
-        }
-        return posibleMoves;
+        //for(ChessMove move : posibleMoves){
+        //    System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn());
+        //}
+        return allowedMoves;
     }
     /**
      * Makes a move in a chess game
@@ -175,7 +177,11 @@ public class ChessGame {
                 }
             }
         }
-        return enemyMoves.contains(kingpos);
+        for(ChessMove move: enemyMoves){
+            if(move.getEndPosition().equals(kingpos))
+                return true;
+        }
+        return false;
     }
 
     public static ChessPosition kingFinder(ChessBoard board, TeamColor color){
@@ -183,6 +189,8 @@ public class ChessGame {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition inter = new ChessPosition(i, j);
                 if(board.getPiece(inter) != null && board.getPiece(inter).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(inter).getTeamColor() == color){
+                    System.out.println("found king at "+inter.getRow()+" "+inter.getColumn() +" of the team:"+board.getPiece(inter).getTeamColor());
+
                     return inter;
                 }
             }
