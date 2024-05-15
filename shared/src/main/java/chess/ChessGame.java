@@ -130,7 +130,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        List<ChessMove> teamMoves = new ArrayList<>(getAllMoves(gameBoard, teamColor));
+        return inChecker(gameBoard, teamColor) && teamMoves.isEmpty();
     }
 
     /**
@@ -141,7 +142,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        List<ChessMove> teamMoves = new ArrayList<>();
+        teamMoves.addAll(getAllMoves(gameBoard, teamColor));
+        return !(inChecker(gameBoard, teamColor)) && teamMoves.isEmpty();
     }
 
     /**
@@ -189,13 +192,27 @@ public class ChessGame {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition inter = new ChessPosition(i, j);
                 if(board.getPiece(inter) != null && board.getPiece(inter).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(inter).getTeamColor() == color){
-                    System.out.println("found king at "+inter.getRow()+" "+inter.getColumn() +" of the team:"+board.getPiece(inter).getTeamColor());
+                    ///System.out.println("found king at "+inter.getRow()+" "+inter.getColumn() +" of the team:"+board.getPiece(inter).getTeamColor());
 
                     return inter;
                 }
             }
         }
         return null;
+    }
+
+    public Collection<ChessMove> getAllMoves(ChessBoard board, TeamColor color) {
+        List<ChessMove> allMoves = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition inter = new ChessPosition(i, j);
+                if (board.getPiece(inter) != null && board.getPiece(inter).getTeamColor() == color) {
+                    ChessPosition temPosision = new ChessPosition(i, j);
+                    allMoves.addAll(validMoves(temPosision));
+                }
+            }
+        }
+        return allMoves;
     }
 
     @Override
