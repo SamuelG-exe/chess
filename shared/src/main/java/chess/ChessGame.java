@@ -30,8 +30,9 @@ public class ChessGame {
 
 
     public ChessGame() {
-        ChessBoard gameBoard = new ChessBoard();
+        gameBoard = new ChessBoard();
         gameBoard.resetBoard();
+        turn = TeamColor.WHITE;
     }
 
     /**
@@ -100,17 +101,19 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition start = move.getStartPosition();
-        ChessPosition end = move.getEndPosition();
         ChessPiece pieceToBeMoved = gameBoard.getPiece(start);
 
         if(pieceToBeMoved == null){
             throw new InvalidMoveException();
         }
-        Collection<ChessMove> validmoves = pieceToBeMoved.pieceMoves(gameBoard, start);
-        if (!(validmoves.contains(move))){
+        Collection<ChessMove> validMoves = validMoves(start);
+
+
+        if (!(validMoves.contains(move)) || pieceToBeMoved.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException();
         }
         gameBoard.makeMoveOnBoard(move);
+        turn = getTeamTurn()==TeamColor.WHITE ? TeamColor.BLACK :TeamColor.WHITE;
     }
 
     /**
