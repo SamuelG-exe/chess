@@ -28,6 +28,9 @@ public class ChessGame {
     boolean hasW_R_Moved = false;
     boolean WkingMoved = false;
 
+    //En Passant
+    boolean canEnPassant = false;
+    ChessPosition temporaryPawn = null;
 
 
 
@@ -109,15 +112,17 @@ public class ChessGame {
         ChessPosition end = move.getEndPosition();
         ChessPiece pieceToBeMoved = gameBoard.getPiece(start);
 
+        //invalid move Checks
         if(pieceToBeMoved == null){
             throw new InvalidMoveException();
         }
         Collection<ChessMove> validMoves = validMoves(start);
 
-
         if (!(validMoves.contains(move)) || pieceToBeMoved.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException();
         }
+
+        //Castling moves for rook
         if(pieceToBeMoved.getPieceType() == ChessPiece.PieceType.KING && Math.abs(start.getColumn()-end.getColumn()) > 1){
             if(end.getColumn()>5){
                 ChessPosition rookStart = new ChessPosition(start.getRow(), 8);
@@ -135,9 +140,26 @@ public class ChessGame {
             }
         }
 
+
+
         gameBoard.makeMoveOnBoard(move);
         turn = getTeamTurn()==TeamColor.WHITE ? TeamColor.BLACK :TeamColor.WHITE;
         haveCastlePiecesMoved(start, pieceToBeMoved);
+
+        if(pieceToBeMoved.getPieceType() == ChessPiece.PieceType.PAWN && abs(end.getRow()- start.getRow()) > 1){
+            canEnPassant = true;
+            if(pieceToBeMoved.getTeamColor() == TeamColor.BLACK){
+                temporaryPawn = new ChessPosition(start.getRow()-1, start.getColumn());
+            }
+            if(pieceToBeMoved.getTeamColor() == TeamColor.WHITE){
+                temporaryPawn = new ChessPosition(start.getRow()+1, start.getColumn());
+            }
+
+        }
+        else{
+            canEnPassant = false;
+            temporaryPawn = null;
+        }
 
 
 
