@@ -39,7 +39,6 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-
         return this.turn;
     }
 
@@ -72,6 +71,10 @@ public class ChessGame {
         Collection<ChessMove> posibleMoves = piece.pieceMoves(gameBoard, startPosition);
         Collection<ChessMove> allowedMoves = piece.pieceMoves(gameBoard, startPosition);
 
+        if(piece.getPieceType() == ChessPiece.PieceType.KING){
+            ChessMove
+        }
+
         for(ChessMove move : posibleMoves){
         ChessBoard testBoard = null;
             try {
@@ -80,7 +83,6 @@ public class ChessGame {
             catch (CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }
-            ///ChessBoard finalTestBoard = testBoard;
             testBoard.makeMoveOnBoard(move);
             if ((inChecker(testBoard, piece.getTeamColor()))) {
                 //System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn()+"this puts me in check");
@@ -114,6 +116,10 @@ public class ChessGame {
         }
         gameBoard.makeMoveOnBoard(move);
         turn = getTeamTurn()==TeamColor.WHITE ? TeamColor.BLACK :TeamColor.WHITE;
+        haveCastlePiecesMoved(start);
+
+
+
     }
 
     /**
@@ -124,7 +130,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         return inChecker(gameBoard, teamColor);
-    } ///if for each move other team can make is does that return the location of the king
+    }
 
     /**
      * Determines if the given team is in checkmate
@@ -145,8 +151,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        List<ChessMove> teamMoves = new ArrayList<>();
-        teamMoves.addAll(getAllMoves(gameBoard, teamColor));
+        List<ChessMove> teamMoves = new ArrayList<>(getAllMoves(gameBoard, teamColor));
         return !(inChecker(gameBoard, teamColor)) && teamMoves.isEmpty();
     }
 
@@ -216,6 +221,58 @@ public class ChessGame {
             }
         }
         return allMoves;
+    }
+
+    public void haveCastlePiecesMoved (ChessPosition start){
+        ChessPiece piece = gameBoard.getPiece(start);
+        if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 1 && start.getColumn()== 1){
+            hasW_L_Moved = true;
+        }
+        if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 1 && start.getColumn()== 8){
+            hasW_R_Moved = true;
+        }
+        if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 8 && start.getColumn()== 1){
+            hasB_L_Moved = true;
+        }
+        if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 8 && start.getColumn()== 8){
+            hasB_R_Moved = true;
+        }
+
+
+        if(piece.getPieceType() == ChessPiece.PieceType.KING && start.getRow() == 1 && start.getColumn()== 5){
+            WkingMoved = true;
+        }
+        if(piece.getPieceType() == ChessPiece.PieceType.KING && start.getRow() == 8 && start.getColumn()== 5){
+            BkingMoved = true;
+        }
+
+    }
+
+    public Collection<ChessMove> castleMoveChecks(TeamColor teamTurn){
+        List<ChessMove> castleMoves = new ArrayList<>();
+
+        if(teamTurn == TeamColor.WHITE) {
+            if (!WkingMoved) {
+                if(!hasW_L_Moved) {
+                    List<ChessMove> enemyMoves = new ArrayList<>(getAllMoves(gameBoard, TeamColor.BLACK));
+                    boolean safeCross = true;
+                    ChessPosition left1 = new ChessPosition(1, 2);
+                    ChessPosition left2 = new ChessPosition(1, 3);
+                    ChessPosition left3 = new ChessPosition(1, 4);
+
+                    for(ChessMove move : enemyMoves){
+                        if (move.getEndPosition() == left1 || move.getEndPosition() == left2 || move.getEndPosition() == left3) {
+                            safeCross = false;
+                            break;
+                        }
+                    }
+                    if( gameBoard.getPiece(left1 )== null && gameBoard.getPiece(left2) == null && gameBoard.getPiece(left3) == null && safeCross) {
+                        ChessMove white_K_CastleLeft = new ChessMove()
+
+                    }
+                }
+            }
+        }
     }
 
     @Override
