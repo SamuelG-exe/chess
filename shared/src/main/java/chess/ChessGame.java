@@ -31,6 +31,8 @@ public class ChessGame {
     //En Passant
     boolean canEnPassant = false;
     ChessPosition temporaryPawn = null;
+    ChessPosition doubleMovedPawn = null;
+
 
 
 
@@ -73,16 +75,49 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = gameBoard.getPiece(startPosition);
-        Collection<ChessMove> posibleMoves = piece.pieceMoves(gameBoard, startPosition);
-        Collection<ChessMove> allowedMoves = piece.pieceMoves(gameBoard, startPosition);
+        Collection<ChessMove> posibleMoves;
+        Collection<ChessMove> allowedMoves;
 
+        TeamColor tempPawnColor;
+
+        //en passant check
+
+        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && !inChecker(gameBoard, piece.getTeamColor()) && canEnPassant){
+            ChessBoard testBoardPawn = null;
+            try {
+                testBoardPawn = (ChessBoard) gameBoard.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(piece.getTeamColor() == TeamColor.WHITE){
+                tempPawnColor = TeamColor.BLACK;
+            }
+            else{
+                tempPawnColor = TeamColor.WHITE;
+            }
+
+            ChessPiece tempPawn = new ChessPiece(tempPawnColor, ChessPiece.PieceType.PAWN);
+            testBoardPawn.addPiece(temporaryPawn, tempPawn);
+
+            posibleMoves = piece.pieceMoves(testBoardPawn, startPosition);
+            allowedMoves = piece.pieceMoves(testBoardPawn, startPosition);
+        }
+        else {
+            posibleMoves = piece.pieceMoves(gameBoard, startPosition);
+            allowedMoves = piece.pieceMoves(gameBoard, startPosition);
+        }
+
+        //castling check
         if(piece.getPieceType() == ChessPiece.PieceType.KING && !inChecker(gameBoard, piece.getTeamColor())){
             posibleMoves.addAll(castleMoveChecks(piece.getTeamColor()));
             allowedMoves.addAll(castleMoveChecks(piece.getTeamColor()));
         }
 
+
         for(ChessMove move : posibleMoves){
-        ChessBoard testBoard = null;
+            ChessBoard testBoard = null;
             try {
                 testBoard = (ChessBoard) gameBoard.clone();
             }
@@ -96,9 +131,9 @@ public class ChessGame {
             }
         }
 
-        for(ChessMove move : posibleMoves){
-          System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn());
-        }
+        //for(ChessMove move : posibleMoves){
+          //System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn());
+        //}
         return allowedMoves;
     }
     /**
@@ -141,10 +176,15 @@ public class ChessGame {
         }
 
 
-
         gameBoard.makeMoveOnBoard(move);
         turn = getTeamTurn()==TeamColor.WHITE ? TeamColor.BLACK :TeamColor.WHITE;
         haveCastlePiecesMoved(start, pieceToBeMoved);
+
+        if(temporaryPawn != null && end.equals(temporaryPawn)){
+            gameBoard.addPiece(doubleMovedPawn, null);
+            doubleMovedPawn = null;
+            temporaryPawn = null;
+        }
 
         if(pieceToBeMoved.getPieceType() == ChessPiece.PieceType.PAWN && abs(end.getRow()- start.getRow()) > 1){
             canEnPassant = true;
@@ -154,12 +194,15 @@ public class ChessGame {
             if(pieceToBeMoved.getTeamColor() == TeamColor.WHITE){
                 temporaryPawn = new ChessPosition(start.getRow()+1, start.getColumn());
             }
+            doubleMovedPawn=end;
 
         }
         else{
             canEnPassant = false;
             temporaryPawn = null;
+            doubleMovedPawn = null;
         }
+
 
 
 
