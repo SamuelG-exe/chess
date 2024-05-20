@@ -115,7 +115,7 @@ public class ChessGame {
             allowedMoves.addAll(castleMoveChecks(piece.getTeamColor()));
         }
 
-
+        //run the move on a clone to check for "check"
         for(ChessMove move : posibleMoves){
             ChessBoard testBoard = null;
             try {
@@ -152,7 +152,6 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         Collection<ChessMove> validMoves = validMoves(start);
-
         if (!(validMoves.contains(move)) || pieceToBeMoved.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException();
         }
@@ -180,12 +179,14 @@ public class ChessGame {
         turn = getTeamTurn()==TeamColor.WHITE ? TeamColor.BLACK :TeamColor.WHITE;
         haveCastlePiecesMoved(start, pieceToBeMoved);
 
+        //for removing the forward piece on an en pasant attack
         if(temporaryPawn != null && end.equals(temporaryPawn)){
             gameBoard.addPiece(doubleMovedPawn, null);
             doubleMovedPawn = null;
             temporaryPawn = null;
         }
 
+        //En passant moves
         if(pieceToBeMoved.getPieceType() == ChessPiece.PieceType.PAWN && abs(end.getRow()- start.getRow()) > 1){
             canEnPassant = true;
             if(pieceToBeMoved.getTeamColor() == TeamColor.BLACK){
@@ -202,10 +203,6 @@ public class ChessGame {
             temporaryPawn = null;
             doubleMovedPawn = null;
         }
-
-
-
-
     }
 
     /**
@@ -270,6 +267,13 @@ public class ChessGame {
     }
 
 
+    /**
+     * Checks if the king of the specified team color is in check on the given chess board.
+     *
+     * @param board the chess board to check
+     * @param color the team color of the king to check for check condition
+     * @return {@code true} if the king is in check, {@code false} otherwise
+     */
     public static boolean inChecker(ChessBoard board, ChessGame.TeamColor color){
         List<ChessMove> enemyMoves = new ArrayList<>();
         ChessPosition kingpos = kingFinder(board, color);
@@ -291,6 +295,13 @@ public class ChessGame {
         return false;
     }
 
+    /**
+     * Finds the position of the king for the specified team color on the given chess board.
+     *
+     * @param board the chess board to search for the king
+     * @param color the team color of the king to find
+     * @return the position of the king if found, or {@code null} if the king is not found
+     */
     public static ChessPosition kingFinder(ChessBoard board, TeamColor color){
         for(int i = 1; i<= 8; i++) {
             for (int j = 1; j <= 8; j++) {
@@ -305,6 +316,14 @@ public class ChessGame {
         return null;
     }
 
+
+    /**
+     * Retrieves all valid moves for the specified team color on the given chess board.
+     *
+     * @param board the chess board to evaluate
+     * @param color the team color whose valid moves are to be retrieved
+     * @return a collection of all valid moves for the specified team color
+     */
     public Collection<ChessMove> getAllValidMoves(ChessBoard board, TeamColor color) {
         List<ChessMove> allMoves = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
@@ -319,6 +338,14 @@ public class ChessGame {
         return allMoves;
     }
 
+
+    /**
+     * Retrieves all possible moves for all pieces of the specified team color on the given chess board.
+     *
+     * @param board the chess board to evaluate
+     * @param color the team color whose pieces' moves are to be retrieved
+     * @return a collection of all possible moves for all pieces of the specified team color
+     */
     public Collection<ChessMove> getAllPieceMoves(ChessBoard board, TeamColor color) {
         List<ChessMove> allMoves = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
@@ -335,7 +362,12 @@ public class ChessGame {
 
 
 
-
+    /**
+     * Updates the status of whether the castle pieces (rooks and kings) have moved based on the given piece's type and starting position.
+     *
+     * @param start the starting position of the piece
+     * @param piece the piece whose movement status is to be updated
+     */
     public void haveCastlePiecesMoved (ChessPosition start, ChessPiece piece){
         if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 1 && start.getColumn()== 1){
             hasW_L_Moved = true;
@@ -360,6 +392,13 @@ public class ChessGame {
 
     }
 
+
+    /**
+     * Determines all valid castling moves for the current team turn, considering the state of the board and the movement history of the king and rooks.
+     *
+     * @param teamTurn the team color whose castling moves are to be checked
+     * @return a collection of valid castling moves for the specified team color
+     */
     public Collection<ChessMove> castleMoveChecks(TeamColor teamTurn) {
         List<ChessMove> castleMoves = new ArrayList<>();
 
@@ -420,6 +459,17 @@ public class ChessGame {
         return castleMoves;
     }
 
+
+    /**
+     * Helper method to check and add valid kingside castling moves to the provided list.
+     *
+     * @param castleMoves the list to which valid kingside castling moves will be added
+     * @param kingLocation the current location of the king
+     * @param enemyMoves a list of moves that enemy pieces can make
+     * @param safeCross2 a flag indicating if the path is safe for castling
+     * @param right1 the first position to the right of the king to check for obstacles
+     * @param right2 the second position to the right of the king to check for obstacles
+     */
     public void castleHelperKingside(List<ChessMove> castleMoves, ChessPosition kingLocation, List<ChessMove> enemyMoves, boolean safeCross2, ChessPosition right1, ChessPosition right2) {
         for (ChessMove move : enemyMoves) {
             if (move.getEndPosition().equals(right1) || move.getEndPosition().equals(right2)) {
@@ -434,6 +484,18 @@ public class ChessGame {
         }
     }
 
+
+    /**
+     * Helper method to check and add valid queenside castling moves to the provided list.
+     *
+     * @param castleMoves the list to which valid queenside castling moves will be added
+     * @param whitekingLocation the current location of the king
+     * @param enemyMoves a list of moves that enemy pieces can make
+     * @param safeCross a flag indicating if the path is safe for castling
+     * @param left1 the first position to the left of the king to check for obstacles
+     * @param left2 the second position to the left of the king to check for obstacles
+     * @param left3 the third position to the left of the king to check for obstacles
+     */
     public void castleHelperQueenside(List<ChessMove> castleMoves, ChessPosition whitekingLocation, List<ChessMove> enemyMoves, boolean safeCross, ChessPosition left1, ChessPosition left2, ChessPosition left3) {
         for (ChessMove move : enemyMoves) {
             if (move.getEndPosition() == left1 || move.getEndPosition() == left2 || move.getEndPosition() == left3) {
