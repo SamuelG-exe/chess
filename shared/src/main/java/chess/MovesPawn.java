@@ -34,7 +34,6 @@ public class MovesPawn {
             checkpos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
             moveAdd(board, myPosition, validMoves, checkpos, false);
 
-
             checkpos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
             moveAdd(board, myPosition, validMoves, checkpos, true);
 
