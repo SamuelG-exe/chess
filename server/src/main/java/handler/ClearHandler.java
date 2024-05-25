@@ -31,7 +31,7 @@ public class ClearHandler implements Route {
         try {
             cleanSlate.clearDB(users, authTokens, games);
             response.status(200);
-            return SerializeUtils.toJson("{}");//might need to replace
+            return "{}";//might need to replace
         }
         catch (Exception e) {
             response.status(500);
