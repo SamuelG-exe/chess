@@ -4,6 +4,8 @@ import dataaccess.dao.internalDAO.AuthInternalDAO;
 import dataaccess.dao.internalDAO.GameInternalDAO;
 import dataaccess.dao.internalDAO.UserInternalDAO;
 import handler.ClearHandler;
+import handler.LoginHandler;
+import handler.RegisterHandler;
 import spark.*;
 import dataaccess.dao.*;
 
@@ -19,8 +21,11 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", (request, response) -> new ClearHandler(users, authTokens, games));
-        Spark.post("/user", (request, response) -> new ClearHandler(users, authTokens, games));
+        Spark.delete("/db", (request, response) -> new ClearHandler(users, authTokens, games).handle(request, response));
+        Spark.post("/user", (request, response) -> new RegisterHandler(users, authTokens).handle(request, response));
+        Spark.post("/session", (request, response) -> new LoginHandler(users, authTokens).handle(request, response));
+        Spark.delete("/session", (request, response) -> new LoginHandler(users, authTokens).handle(request, response));
+
 
         Spark.awaitInitialization();
         return Spark.port();

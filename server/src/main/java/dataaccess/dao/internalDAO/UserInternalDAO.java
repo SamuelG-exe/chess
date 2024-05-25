@@ -14,7 +14,7 @@ public class UserInternalDAO implements UserDAO {
     @Override
     public void createUser(UserData userInfo) throws DataAccessException {
         if(allUsers.containsKey(userInfo.username())){
-            throw new DataAccessException("This Username is taken, try another");
+            throw new DataAccessException("already taken");
         };
         allUsers.put(userInfo.username(), userInfo);
     }
