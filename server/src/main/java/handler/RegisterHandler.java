@@ -6,6 +6,7 @@ import dataaccess.dao.GameDAO;
 import dataaccess.dao.UserDAO;
 import model.UserData;
 import request.RegisterReq;
+import response.ErrorMessagesResp;
 import response.RegisterResp;
 import service.ClearDBService;
 import service.RegisterService;
@@ -24,7 +25,6 @@ public class RegisterHandler implements Route {
     }
 
     RegisterService newUser = new RegisterService();
-    ErrorMessages errorMessage = new ErrorMessages();
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -44,7 +44,7 @@ public class RegisterHandler implements Route {
             else{
                 response.status(500);
             }
-            return SerializeUtils.toJson(errorMessage.message = ("Error: " + e.getMessage()));
+            return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));
         }
 
     }

@@ -4,6 +4,7 @@ import Json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.UserDAO;
 import request.LoginReq;
+import response.ErrorMessagesResp;
 import response.LoginResp;
 import service.LoginService;
 
@@ -23,7 +24,6 @@ public class LoginHandler implements Route {
     }
 
     LoginService userLogin = new LoginService();
-    ErrorMessages errorMessage = new ErrorMessages();
 
 
     @Override
@@ -39,7 +39,7 @@ public class LoginHandler implements Route {
             } else {
                 response.status(500);
             }
-            return SerializeUtils.toJson(errorMessage.message = ("Error: " + e.getMessage()));
+            return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));
         }
     }
 }

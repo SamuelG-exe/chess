@@ -3,10 +3,8 @@ package handler;
 import Json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
-import dataaccess.dao.UserDAO;
-import request.RegisterReq;
+import response.ErrorMessagesResp;
 import response.ListGamesResp;
-import response.RegisterResp;
 import service.ListGamesService;
 import spark.Request;
 import spark.Response;
@@ -15,16 +13,12 @@ import spark.Route;
 public class ListGamesHandler implements Route {
     private AuthDAO authTokensDAO;
     private GameDAO gameDAO;
-    ErrorMessages errorMessage = new ErrorMessages();
     ListGamesService gameList = new ListGamesService();
 
     public ListGamesHandler(AuthDAO authTokens, GameDAO games) {
         this.gameDAO = games;
         this.authTokensDAO = authTokens;
     }
-
-
-
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -42,7 +36,7 @@ public class ListGamesHandler implements Route {
             else {
                 response.status(500);
             }
-            return SerializeUtils.toJson(errorMessage.message = ("Error: " + e.getMessage()));
+            return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));
         }
 
 

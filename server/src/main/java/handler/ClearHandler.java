@@ -6,6 +6,7 @@ import dataaccess.dao.UserDAO;
 import dataaccess.dao.internalDAO.AuthInternalDAO;
 import dataaccess.dao.internalDAO.GameInternalDAO;
 import dataaccess.dao.internalDAO.UserInternalDAO;
+import response.ErrorMessagesResp;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -24,7 +25,6 @@ public class ClearHandler implements Route {
     }
 
     ClearDBService cleanSlate = new ClearDBService();
-    ErrorMessages errorMessage = new ErrorMessages();
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -35,7 +35,7 @@ public class ClearHandler implements Route {
         }
         catch (Exception e) {
             response.status(500);
-            return SerializeUtils.toJson(errorMessage.message = ("Error: " + e.getMessage()));
+            return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));
         }
 
     }

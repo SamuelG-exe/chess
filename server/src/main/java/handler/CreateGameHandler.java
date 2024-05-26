@@ -2,31 +2,40 @@ package handler;
 
 import Json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
+import dataaccess.dao.GameDAO;
+import response.CreateGameResp;
 import response.ErrorMessagesResp;
-import service.LogoutService;
+import response.ListGamesResp;
+import service.CreateGameService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class LogoutHandler implements Route {
+public class CreateGameHandler implements Route {
+
     private AuthDAO authTokensDAO;
+    private GameDAO gameDAO;
 
-    LogoutService userLogout = new LogoutService();
+    CreateGameService newGame = new CreateGameService();
 
-    public LogoutHandler(AuthDAO authTokens) {
+    public CreateGameHandler(AuthDAO authTokens, GameDAO games) {
+        this.gameDAO = games;
         this.authTokensDAO = authTokens;
     }
-
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
         try {
             String token = request.headers("authorization");
-            userLogout.logout(authTokensDAO, token);
+            String gameName = request.body();
+            CreateGameResp newResp = newGame.makeNewGame(gameDAO, authTokensDAO, token, gameName);
             response.status(200);
-            return "{}";//might need to replace
+            return SerializeUtils.toJson(newResp);
         }
         catch (Exception e) {
+            if(e.getMessage().equals("bad request")) {
+                response.status(400);
+            }
             if (e.getMessage().equals("unauthorized")) {
                 response.status(401);
             }

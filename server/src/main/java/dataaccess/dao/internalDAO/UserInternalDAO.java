@@ -23,7 +23,7 @@ public class UserInternalDAO implements UserDAO {
     public UserData getUser(String username) throws DataAccessException {
         UserData neededUser = allUsers.get(username);
         if(neededUser==null){
-            throw new DataAccessException("No user with that Username Found");
+            throw new DataAccessException("unauthorized");
         }
 
         return neededUser;
