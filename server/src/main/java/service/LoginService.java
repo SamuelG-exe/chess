@@ -3,6 +3,7 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.UserDAO;
+import model.AuthData;
 import model.UserData;
 import request.LoginReq;
 import request.RegisterReq;
@@ -20,6 +21,8 @@ public class LoginService {
             throw new DataAccessException("unauthorized");
         }
         String newAuthToken =  new ServiceUtils().makeToken();
+        AuthData newToken = new AuthData(newAuthToken, request.username());
+        authTokens.createAuth(newToken);
         return new LoginResp(returningUser.username(), newAuthToken);
 
     }

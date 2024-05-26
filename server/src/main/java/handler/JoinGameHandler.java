@@ -17,8 +17,7 @@ public class JoinGameHandler implements Route {
     private UserDAO usersDAO;
     private AuthDAO authTokensDAO;
     private GameDAO gameDAO;
-
-    JoinGameService playerJoin;
+    JoinGameService playerJoin = new JoinGameService();
 
 
     public JoinGameHandler(UserDAO users, AuthDAO authTokens, GameDAO games) {

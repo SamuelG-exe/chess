@@ -24,7 +24,7 @@ public class GameInternalDAO implements GameDAO {
     public GameData getGame(String gameID) throws DataAccessException {
         GameData neededGame = allGames.get(gameID);
         if(neededGame == null){
-            throw new DataAccessException("No game with that ID Found");
+            throw new DataAccessException("bad request");
         }
         return neededGame;
     }
@@ -37,8 +37,8 @@ public class GameInternalDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(GameData gameData) {
-        allGames.replace(gameData.gameID(), gameData);
+    public void updateGame(String gameID, GameData gameData) {
+        allGames.replace(gameID, gameData);
     }
 
     @Override
