@@ -15,7 +15,7 @@ public class GameInternalDAO implements GameDAO {
     @Override
     public void createGame(GameData gameData) throws DataAccessException {
         if(allGames.containsKey(gameData.gameID())){
-            throw new DataAccessException("This GameID already exists");
+            throw new DataAccessException("already taken");
         }
         allGames.put(gameData.gameID(), gameData);
     }
