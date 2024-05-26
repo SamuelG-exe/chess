@@ -36,7 +36,7 @@ public class CreateGameHandler implements Route {
             if(e.getMessage().equals("bad request")) {
                 response.status(400);
             }
-            if (e.getMessage().equals("unauthorized")) {
+            else if (e.getMessage().equals("unauthorized")) {
                 response.status(401);
             }
             else {

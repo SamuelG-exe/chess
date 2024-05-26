@@ -35,11 +35,11 @@ public class RegisterHandler implements Route {
             return SerializeUtils.toJson(newResp);//might need to replace
         }
         catch (Exception e) {
-            if(e.getMessage().equals("already taken")){
-                response.status(403);
-            }
             if(e.getMessage().equals("bad request")){
                 response.status(400);
+            }
+            else if(e.getMessage().equals("already taken")){
+                response.status(403);
             }
             else{
                 response.status(500);

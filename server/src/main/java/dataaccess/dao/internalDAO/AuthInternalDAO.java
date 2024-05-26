@@ -24,7 +24,7 @@ public class AuthInternalDAO implements AuthDAO {
     public AuthData getAuth(String authToken) throws DataAccessException {
         AuthData neededAuth = allAuth.get(authToken);
         if(neededAuth==null){
-            throw new DataAccessException("Not a Valid authtoken");
+            throw new DataAccessException("unauthorized");
         }
         else {
             return neededAuth;
