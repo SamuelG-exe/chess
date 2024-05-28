@@ -31,10 +31,10 @@ public class ListGamesServiceTest {
         String username = "SirChessGamer";
         String authToken = "validToken";
         String gameID = "game123";
-        ChessGame newgame = new ChessGame();
+        ChessGame newGame = new ChessGame();
 
         auths.createAuth(new AuthData(authToken, username));
-        GameData gameTest = new GameData(gameID, null, null, "The one true Game", newgame);
+        GameData gameTest = new GameData(gameID, null, null, "The one true Game", newGame);
         games.createGame(gameTest);
         gameLister = new ListGamesService();
 
