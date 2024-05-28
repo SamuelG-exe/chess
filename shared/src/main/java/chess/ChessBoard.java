@@ -121,6 +121,48 @@ public class ChessBoard implements Cloneable{
         return (getPiece(endPosition) == null || getPiece(endPosition).getTeamColor() != getPiece(startPosition).getTeamColor());
     }
 
+    /**
+     * Finds the position of the king for the specified team color on the given chess board.
+     *
+     * @param board the chess board to search for the king
+     * @param color the team color of the king to find
+     * @return the position of the king if found, or {@code null} if the king is not found
+     */
+    public static ChessPosition kingFinder(ChessBoard board, ChessGame.TeamColor color){
+        for(int i = 1; i<= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition inter = new ChessPosition(i, j);
+                if(board.getPiece(inter) != null && board.getPiece(inter).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(inter).getTeamColor() == color){
+                    ///System.out.println("found king at "+inter.getRow()+" "+inter.getColumn() +" of the team:"+board.getPiece(inter).getTeamColor());
+
+                    return inter;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public static boolean inChecker(ChessBoard board, ChessGame.TeamColor color){
+        List<ChessMove> enemyMoves = new ArrayList<>();
+        ChessPosition kingPos = ChessBoard.kingFinder(board, color);
+        for(int i = 1; i<= 8; i++){
+            for(int j = 1; j<= 8; j++){
+                ChessPosition inter = new ChessPosition(i, j);
+                if (board.getPiece(inter) != null && kingPos != null){
+                    if(board.getPiece(inter).getTeamColor() != board.getPiece(kingPos).getTeamColor()) {
+                        ChessPiece enemyPiece = board.getPiece(inter);
+                        enemyMoves.addAll(enemyPiece.pieceMoves(board, inter));
+                    }
+                }
+            }
+        }
+        for(ChessMove move: enemyMoves){
+            if(move.getEndPosition().equals(kingPos))
+                return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean equals(Object o) {
