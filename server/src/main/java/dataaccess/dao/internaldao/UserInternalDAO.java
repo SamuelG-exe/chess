@@ -1,4 +1,4 @@
-package dataaccess.dao.internalDAO;
+package dataaccess.dao.internaldao;
 
 import dataaccess.DataAccessException;
 import dataaccess.dao.UserDAO;

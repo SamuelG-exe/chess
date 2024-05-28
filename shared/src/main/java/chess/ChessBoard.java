@@ -1,7 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static java.lang.Math.abs;
 
@@ -118,6 +120,7 @@ public class ChessBoard implements Cloneable{
     public boolean validMove(ChessPosition startPosition, ChessPosition endPosition){
         return (getPiece(endPosition) == null || getPiece(endPosition).getTeamColor() != getPiece(startPosition).getTeamColor());
     }
+
 
     @Override
     public boolean equals(Object o) {

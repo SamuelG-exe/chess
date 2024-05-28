@@ -1,14 +1,12 @@
 package handler;
 
-import Json.SerializeUtils;
+import json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
 import dataaccess.dao.UserDAO;
 import request.JoinGameReq;
-import request.RegisterReq;
 import response.ErrorMessagesResp;
 import service.JoinGameService;
-import service.ListGamesService;
 import spark.Request;
 import spark.Response;
 import spark.Route;

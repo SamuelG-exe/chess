@@ -3,8 +3,8 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.UserDAO;
-import dataaccess.dao.internalDAO.AuthInternalDAO;
-import dataaccess.dao.internalDAO.UserInternalDAO;
+import dataaccess.dao.internaldao.AuthInternalDAO;
+import dataaccess.dao.internaldao.UserInternalDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.RegisterReq;
@@ -53,11 +53,11 @@ public class RegisterServiceTest {
         //newUser
         String newUserUsername = "SirChessGamer";
         String newUserPasswor = "passWord";
-        String NewUserEmail = "newUser@ChessGamer.com";
+        String newUserEmail = "newUser@ChessGamer.com";
 
 
         RegisterReq existingUser = new RegisterReq(username, passWord, email);
-        RegisterReq newUserReq = new RegisterReq(newUserUsername, newUserPasswor, NewUserEmail);
+        RegisterReq newUserReq = new RegisterReq(newUserUsername, newUserPasswor, newUserEmail);
 
 
         assertEquals(0, (auths.size()));

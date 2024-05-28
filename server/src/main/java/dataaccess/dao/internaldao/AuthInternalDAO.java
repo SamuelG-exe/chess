@@ -1,13 +1,11 @@
-package dataaccess.dao.internalDAO;
+package dataaccess.dao.internaldao;
 
 import dataaccess.DataAccessException;
 import dataaccess.dao.AuthDAO;
 import model.AuthData;
-import model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class AuthInternalDAO implements AuthDAO {
     private final Map<String, AuthData> allAuth = new HashMap<>();

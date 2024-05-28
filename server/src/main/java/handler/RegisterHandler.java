@@ -1,14 +1,11 @@
 package handler;
 
-import Json.SerializeUtils;
+import json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
-import dataaccess.dao.GameDAO;
 import dataaccess.dao.UserDAO;
-import model.UserData;
 import request.RegisterReq;
 import response.ErrorMessagesResp;
 import response.RegisterResp;
-import service.ClearDBService;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;

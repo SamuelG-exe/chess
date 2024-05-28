@@ -1,6 +1,6 @@
 package handler;
 
-import Json.SerializeUtils;
+import json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.UserDAO;
 import request.LoginReq;
@@ -36,7 +36,8 @@ public class LoginHandler implements Route {
         } catch (Exception e) {
             if (e.getMessage().equals("unauthorized")) {
                 response.status(401);
-            } else {
+            }
+            else {
                 response.status(500);
             }
             return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));

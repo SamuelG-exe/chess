@@ -19,14 +19,14 @@ public class ChessGame {
     private ChessBoard gameBoard;
 
     ///black castle
-    boolean hasB_L_Moved = false;
-    boolean hasB_R_Moved = false;
-    boolean BkingMoved = false;
+    boolean blackLeftRookMoved = false;
+    boolean blackRightRookMoved = false;
+    boolean blackKingMoved = false;
 
     ///white castle
-    boolean hasW_L_Moved = false;
-    boolean hasW_R_Moved = false;
-    boolean WkingMoved = false;
+    boolean whiteLeftRookMoved = false;
+    boolean whiteRightRookMoved = false;
+    boolean whiteKingMoved = false;
 
     //En Passant
     boolean canEnPassant = false;
@@ -130,10 +130,6 @@ public class ChessGame {
                 allowedMoves.remove(move);
             }
         }
-
-        //for(ChessMove move : posibleMoves){
-          //System.out.println(move.getEndPosition().getRow()+" "+move.getEndPosition().getColumn());
-        //}
         return allowedMoves;
     }
     /**
@@ -245,14 +241,14 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         gameBoard = board;
-        hasB_L_Moved = false;
-        hasB_R_Moved = false;
-        BkingMoved = false;
+        blackLeftRookMoved = false;
+        blackRightRookMoved = false;
+        blackKingMoved = false;
 
         ///white castle
-        hasW_L_Moved = false;
-        hasW_R_Moved = false;
-        WkingMoved = false;
+        whiteLeftRookMoved = false;
+        whiteRightRookMoved = false;
+        whiteKingMoved = false;
 
 
     }
@@ -370,24 +366,24 @@ public class ChessGame {
      */
     public void haveCastlePiecesMoved (ChessPosition start, ChessPiece piece){
         if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 1 && start.getColumn()== 1){
-            hasW_L_Moved = true;
+            whiteLeftRookMoved = true;
         }
         if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 1 && start.getColumn()== 8){
-            hasW_R_Moved = true;
+            whiteRightRookMoved = true;
         }
         if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 8 && start.getColumn()== 1){
-            hasB_L_Moved = true;
+            blackLeftRookMoved = true;
         }
         if(piece.getPieceType() == ChessPiece.PieceType.ROOK && start.getRow() == 8 && start.getColumn()== 8){
-            hasB_R_Moved = true;
+            blackRightRookMoved = true;
         }
 
 
         if(piece.getPieceType() == ChessPiece.PieceType.KING && start.getRow() == 1 && start.getColumn()== 5){
-            WkingMoved = true;
+            whiteKingMoved = true;
         }
         if(piece.getPieceType() == ChessPiece.PieceType.KING && start.getRow() == 8 && start.getColumn()== 5){
-            BkingMoved = true;
+            blackKingMoved = true;
         }
 
     }
@@ -406,9 +402,9 @@ public class ChessGame {
             ChessPosition whitekingLocation = kingFinder(gameBoard, teamTurn);
             assert whitekingLocation != null;
             if(whitekingLocation.getRow()==1 && whitekingLocation. getColumn()==5) {
-                if (!WkingMoved) {
+                if (!whiteKingMoved) {
 
-                    if (!hasW_L_Moved) {
+                    if (!whiteLeftRookMoved) {
                         List<ChessMove> enemyMoves = new ArrayList<>(getAllPieceMoves(gameBoard, TeamColor.BLACK));
                         boolean safeCross = true;
                         ChessPosition left1 = new ChessPosition(1, 2);
@@ -418,7 +414,7 @@ public class ChessGame {
                         castleHelperQueenside(castleMoves, whitekingLocation, enemyMoves, safeCross, left1, left2, left3);
                     }
 
-                    if (!hasW_R_Moved) {
+                    if (!whiteRightRookMoved) {
                         List<ChessMove> enemyMoves = new ArrayList<>(getAllPieceMoves(gameBoard, TeamColor.BLACK));
                         boolean safeCross2 = true;
                         ChessPosition right1 = new ChessPosition(1, 6);
@@ -433,9 +429,9 @@ public class ChessGame {
             ChessPosition blackKingLocation = kingFinder(gameBoard, teamTurn);
             assert blackKingLocation != null;
             if(blackKingLocation.getRow()==8 && blackKingLocation.getColumn()==5) {
-                if (!BkingMoved) {
+                if (!blackKingMoved) {
 
-                    if (!hasB_L_Moved) {
+                    if (!blackLeftRookMoved) {
                         List<ChessMove> enemyMoves = new ArrayList<>(getAllPieceMoves(gameBoard, TeamColor.WHITE));
                         boolean safeCross = true;
                         ChessPosition left1 = new ChessPosition(8, 2);
@@ -445,7 +441,7 @@ public class ChessGame {
                         castleHelperQueenside(castleMoves, blackKingLocation, enemyMoves, safeCross, left1, left2, left3);
                     }
 
-                    if (!hasB_R_Moved) {
+                    if (!blackRightRookMoved) {
                         List<ChessMove> enemyMoves = new ArrayList<>(getAllPieceMoves(gameBoard, TeamColor.WHITE));
                         boolean safeCross2 = true;
                         ChessPosition right1 = new ChessPosition(8, 6);

@@ -3,14 +3,13 @@ import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
-import dataaccess.dao.internalDAO.AuthInternalDAO;
-import dataaccess.dao.internalDAO.GameInternalDAO;
+import dataaccess.dao.internaldao.AuthInternalDAO;
+import dataaccess.dao.internaldao.GameInternalDAO;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.JoinGameReq;
-import response.CreateGameResp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

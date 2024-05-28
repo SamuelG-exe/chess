@@ -1,8 +1,8 @@
 package server;
 
-import dataaccess.dao.internalDAO.AuthInternalDAO;
-import dataaccess.dao.internalDAO.GameInternalDAO;
-import dataaccess.dao.internalDAO.UserInternalDAO;
+import dataaccess.dao.internaldao.AuthInternalDAO;
+import dataaccess.dao.internaldao.GameInternalDAO;
+import dataaccess.dao.internaldao.UserInternalDAO;
 import handler.*;
 import spark.*;
 import dataaccess.dao.*;

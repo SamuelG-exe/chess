@@ -3,14 +3,11 @@ package handler;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
 import dataaccess.dao.UserDAO;
-import dataaccess.dao.internalDAO.AuthInternalDAO;
-import dataaccess.dao.internalDAO.GameInternalDAO;
-import dataaccess.dao.internalDAO.UserInternalDAO;
 import response.ErrorMessagesResp;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import Json.SerializeUtils;
+import json.SerializeUtils;
 import service.ClearDBService;
 
 public class ClearHandler implements Route {

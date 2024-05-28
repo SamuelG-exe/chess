@@ -1,6 +1,6 @@
 package handler;
 
-import Json.SerializeUtils;
+import json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
 import response.ErrorMessagesResp;
