@@ -25,13 +25,14 @@ public class LogoutHandler implements Route {
             userLogout.logout(authTokensDAO, token);
             response.status(200);
             return "{}";//might need to replace
-        }
-        catch (Exception e) {
-            if (e.getMessage().equals("unauthorized")) {
-                response.status(401);
-            }
-            else {
-                response.status(500);
+        } catch (Exception e) {
+            switch (e.getMessage()) {
+                case "unauthorized":
+                    response.status(401);
+                    break;
+                default:
+                    response.status(500);
+                    break;
             }
             return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));
         }

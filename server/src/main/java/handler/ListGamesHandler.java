@@ -30,11 +30,11 @@ public class ListGamesHandler implements Route {
             return SerializeUtils.toJson(newResp);
         }
         catch (Exception e) {
-            if (e.getMessage().equals("unauthorized")) {
-                response.status(401);
+            if (!(e.getMessage().equals("unauthorized"))) {
+                response.status(500);
             }
             else {
-                response.status(500);
+                response.status(401);
             }
             return SerializeUtils.toJson(new ErrorMessagesResp("Error: " + e.getMessage()));
         }
