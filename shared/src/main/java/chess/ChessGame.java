@@ -436,8 +436,8 @@ public class ChessGame {
         }
         if (gameBoard.getPiece(right1) == null && gameBoard.getPiece(right2) == null && safeCross2 && kingLocation.getColumn() == 5 && (kingLocation.getRow() == 1 || kingLocation.getRow() == 8)) {
             ChessPosition whiteKingEnd = new ChessPosition(kingLocation.getRow(), kingLocation.getColumn() + 2);
-            ChessMove white_K_CastleRight = new ChessMove(kingLocation, whiteKingEnd, null);
-            castleMoves.add(white_K_CastleRight);
+            ChessMove kingCastleRight = new ChessMove(kingLocation, whiteKingEnd, null);
+            castleMoves.add(kingCastleRight);
         }
     }
 
@@ -462,8 +462,8 @@ public class ChessGame {
         }
         if (gameBoard.getPiece(left1) == null && gameBoard.getPiece(left2) == null && gameBoard.getPiece(left3) == null && safeCross) {
             ChessPosition whiteKingEnd = new ChessPosition(whitekingLocation.getRow(), whitekingLocation.getColumn() - 2);
-            ChessMove white_K_CastleLeft = new ChessMove(whitekingLocation, whiteKingEnd, null);
-            castleMoves.add(white_K_CastleLeft);
+            ChessMove kingCastleLeft = new ChessMove(whitekingLocation, whiteKingEnd, null);
+            castleMoves.add(kingCastleLeft);
         }
     }
 
