@@ -45,4 +45,11 @@ public class GameInternalDAO implements GameDAO {
     public void clear() {
         allGames.clear();
     }
+
+    @Override
+    public int size() {
+        return allGames.size();
+    }
+
+
 }

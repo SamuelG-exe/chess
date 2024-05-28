@@ -2,6 +2,8 @@ package dataaccess.dao;
 import dataaccess.DataAccessException;
 import model.UserData;
 
+import java.util.Map;
+
 
 public interface UserDAO {
 
@@ -10,4 +12,6 @@ public interface UserDAO {
     public UserData getUser(String username) throws DataAccessException;
 
     public void clear();
+
+    public int size();
 }

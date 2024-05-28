@@ -34,4 +34,13 @@ public class UserInternalDAO implements UserDAO {
     public void clear() {
         allUsers.clear();
     }
+
+    @Override
+    public int size() {
+        return allUsers.size();
+    }
+
+
 }
+
+

@@ -19,4 +19,6 @@ public interface GameDAO {
 
     public void clear();
 
+    public int size();
+
 }

@@ -13,4 +13,6 @@ public interface AuthDAO {
     public void deleteAuth(String authToken);
 
     public void clear();
+
+    public int size();
 }

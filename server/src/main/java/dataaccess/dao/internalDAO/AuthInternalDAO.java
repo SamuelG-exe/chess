@@ -40,4 +40,9 @@ public class AuthInternalDAO implements AuthDAO {
     public void clear() {
         allAuth.clear();
     }
+
+    @Override
+    public int size() {
+        return allAuth.size();
+    }
 }
