@@ -10,7 +10,9 @@ import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import response.ListGamesResp;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ListGamesServiceTest {
@@ -37,8 +39,9 @@ public class ListGamesServiceTest {
         GameData gameTest = new GameData(gameID, null, null, "The one true Game", newGame);
         games.createGame(gameTest);
         gameLister = new ListGamesService();
+        ListGamesResp response = gameLister.listGamesService(games, auths, authToken);
 
-        gameLister.listGamesService(games, auths, authToken);
+        assertNotNull(response);
 
     }
 
