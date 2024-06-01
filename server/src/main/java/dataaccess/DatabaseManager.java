@@ -34,13 +34,14 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    public static void createDatabase() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -58,7 +59,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog(DATABASE_NAME);
@@ -66,5 +67,24 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+    }
+
+    static void createTables() throws DataAccessException {
+        String usersTableSQL = "CREATE TABLE IF NOT EXISTS users ("
+                + "username VARCHAR(50) PRIMARY KEY, "
+                + "password VARCHAR(255) NOT NULL, "
+                + "email VARCHAR(100) UNIQUE NOT NULL)";
+
+        String gamesTableSQL = "CREATE TABLE IF NOT EXISTS games ("
+                + "gameID VARCHAR(50) PRIMARY KEY, "
+                + "gameName VARCHAR(255) NOT NULL, "
+                + "gameStatus VARCHAR(50) NOT NULL)";
+
+        String authTableSQL = "CREATE TABLE IF NOT EXISTS auth ("
+                + "authToken VARCHAR(255) PRIMARY KEY, "
+                + "username VARCHAR(50) NOT NULL, "
+                + "FOREIGN KEY (username) REFERENCES users(username))";
+
+
     }
 }

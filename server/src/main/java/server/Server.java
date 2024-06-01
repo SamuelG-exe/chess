@@ -1,11 +1,17 @@
 package server;
 
+
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import dataaccess.dao.internaldao.AuthInternalDAO;
 import dataaccess.dao.internaldao.GameInternalDAO;
 import dataaccess.dao.internaldao.UserInternalDAO;
 import handler.*;
 import spark.*;
 import dataaccess.dao.*;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Server {
 
@@ -14,6 +20,14 @@ public class Server {
     private GameDAO games = new GameInternalDAO();
 
     public int run(int desiredPort) {
+        try {
+            DatabaseManager.createDatabase();
+            }catch (DataAccessException e) {
+                System.err.println("Error creating database: " + e.getMessage());
+        }
+
+
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
