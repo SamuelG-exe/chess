@@ -6,6 +6,7 @@ import dataaccess.DatabaseManager;
 import dataaccess.dao.internaldao.AuthInternalDAO;
 import dataaccess.dao.internaldao.GameInternalDAO;
 import dataaccess.dao.internaldao.UserInternalDAO;
+import dataaccess.dao.sqlDao.AuthSQL;
 import handler.*;
 import spark.*;
 import dataaccess.dao.*;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 public class Server {
 
     private UserDAO users = new UserInternalDAO();
-    private AuthDAO authTokens = new AuthInternalDAO();
+    private AuthDAO authTokens = new AuthSQL();
     private GameDAO games = new GameInternalDAO();
 
     public int run(int desiredPort) {
