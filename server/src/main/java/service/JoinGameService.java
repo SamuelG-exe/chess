@@ -16,9 +16,15 @@ public class JoinGameService {
 
     public void join(GameDAO games, AuthDAO authTokens, String authToken, JoinGameReq request) throws DataAccessException {
 
+        if(request.gameID() == null){
+            throw new DataAccessException("bad request");
+        }
         utils.verifyAuth(authTokens, authToken);
         games.getGame(request.gameID());
         gameToBeJoined = games.getGame(request.gameID());
+        if(gameToBeJoined == null){
+            throw new DataAccessException("bad request");
+        }
         if (Objects.equals(request.gameID(), "0") || request.playerColor()==null){
                 throw new DataAccessException("bad request");
             }

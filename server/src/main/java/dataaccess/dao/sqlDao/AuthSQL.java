@@ -61,7 +61,7 @@ public class AuthSQL implements AuthDAO {
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE auth";
+        var statement = "DELETE FROM auth";
         executeUpdate(statement);
         size=0;
 

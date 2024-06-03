@@ -44,9 +44,11 @@ public class GameSQL implements GameDAO {
                 ChessGame chessgame = new Gson().fromJson(chessGameString, ChessGame.class);
                 return new GameData(gameIDSQL, whiteUsername, blackUsername, gameName, chessgame);
             }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+
         return null;
     }
 
@@ -65,6 +67,7 @@ public class GameSQL implements GameDAO {
                     }
                 }
             } catch (Exception e) {
+                System.out.println("inlistgames");
                 throw new DataAccessException(e.getMessage());
             }
             return listOfGames;
@@ -73,15 +76,15 @@ public class GameSQL implements GameDAO {
 
     @Override
     public void updateGame(String gameID, GameData gameData) throws DataAccessException {
-        var statement = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, chessGame WHERE gameID = ?";
+        var statement = "UPDATE games SET whiteUsername = ?, blackUsername = ?, chessGame = ? WHERE gameID = ?";
         var jsonOfGame = new Gson().toJson(gameData.game());
-        SQLUtills.executeUpdate(statement, gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), jsonOfGame);
+        SQLUtills.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), jsonOfGame, gameID);
 
     }
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE games";
+        var statement = "DELETE FROM games";
         executeUpdate(statement);
         size=0;
 
