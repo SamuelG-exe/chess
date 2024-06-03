@@ -10,7 +10,7 @@ public interface AuthDAO {
 
     public AuthData getAuth(String authToken) throws DataAccessException;
 
-    public void deleteAuth(String authToken);
+    public void deleteAuth(String authToken) throws DataAccessException;
 
     public void clear();
 
