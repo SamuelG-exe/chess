@@ -12,7 +12,7 @@ public interface AuthDAO {
 
     public void deleteAuth(String authToken) throws DataAccessException;
 
-    public void clear();
+    public void clear() throws DataAccessException;
 
     public int size();
 }

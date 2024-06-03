@@ -1,37 +1,37 @@
 package dataaccess.dao.sqlDao;
 
-import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.dao.AuthDAO;
 import model.AuthData;
 import java.sql.*;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
+import static dataaccess.dao.sqlDao.SQLUtills.executeUpdate;
 
 public class AuthSQL implements AuthDAO {
-    Connection connection = null;
+    int size = 0;
 
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
-        var statement = "INSERT INTO auth (token, name) VALUES (?, ?)";
-        connection = getConnnectionInAuth();
-        try(PreparedStatement stmt = connection.prepareStatement(statement)) {
+        var statement = "INSERT INTO auth (authtoken, username) VALUES (?, ?)";
+        try(Connection connection = DatabaseManager.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(statement)) {
             stmt.setString(1, authData.authToken());
             stmt.setString(2, authData.username());
             stmt.executeUpdate();
+            size++;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
+
 
     }
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         var statement = "SELECT authtoken, username FROM auth WHERE authtoken = ?";
-        connection = getConnnectionInAuth();
-        try(PreparedStatement stmt = connection.prepareStatement(statement)) {
+        try(Connection connection = DatabaseManager.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(statement)) {
             stmt.setString(1, authToken);
             var sqlLine = stmt.executeQuery();
             if (sqlLine.next()) {
@@ -41,66 +41,32 @@ public class AuthSQL implements AuthDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return null;
     }
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        var statement = "DELETE FROM pet WHERE id=?";
-        connection = getConnnectionInAuth();
+        var statement = "DELETE FROM authToken WHERE id=?";
+        executeUpdate(statement, authToken);
+        size--;
 
     }
 
     @Override
-    public void clear() {
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE authToken";
+        executeUpdate(statement);
+        size=0;
 
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
 
-    private Connection getConnnectionInAuth() throws DataAccessException {
-        Connection connection = null;
-        try (Connection c = DatabaseManager.getConnection()) {
-            connection = c;
-        } catch (SQLException ex) {
-            try {
-                if (connection != null && !connection.isClosed()) {
-                    connection.rollback();
-                }
-            } catch (SQLException e) {
-                throw new DataAccessException(e.getMessage());
-            }
-        }
-        return connection;
-    }
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof ChessGame p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new DataAccessException(e.getMessage());
-        }
-    }
 }
