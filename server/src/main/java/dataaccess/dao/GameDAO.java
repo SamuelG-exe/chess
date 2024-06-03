@@ -10,11 +10,11 @@ import java.util.Map;
 
 public interface GameDAO {
 
-    public void createGame(GameData gameData) throws DataAccessException, SQLException;
+    public void createGame(GameData gameData) throws DataAccessException;
 
     public GameData getGame(String gameID) throws DataAccessException;
 
-    public List<GameData> listGames();
+    public List<GameData> listGames() throws DataAccessException;
 
     public void updateGame(String gameID, GameData gameData);
 

@@ -37,18 +37,23 @@ public class AuthSQL implements AuthDAO {
             if (sqlLine.next()) {
                 var token = sqlLine.getString(1);
                 var user = sqlLine.getString(2);
+                if (token == null || user == null) {
+                    throw new DataAccessException("unauthorized");
+                }
                 return new AuthData(token, user);
+            }
+            else {
+                throw new DataAccessException("unauthorized");
             }
 
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-        return null;
     }
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        var statement = "DELETE FROM authToken WHERE id=?";
+        var statement = "DELETE FROM auth WHERE authToken=?";
         executeUpdate(statement, authToken);
         size--;
 
@@ -56,7 +61,7 @@ public class AuthSQL implements AuthDAO {
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE authToken";
+        var statement = "TRUNCATE auth";
         executeUpdate(statement);
         size=0;
 
