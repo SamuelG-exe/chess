@@ -34,8 +34,6 @@ public class ClearDBServiceTest {
         // When
         clearDBService.clearDB(users, tokens, games);
 
-
-
         assertEquals(0, users.size());
         assertEquals(0, tokens.size());
         assertEquals(0, games.size());

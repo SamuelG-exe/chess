@@ -3,6 +3,8 @@ package handler;
 import json.SerializeUtils;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
+import request.CreateGameReq;
+import request.JoinGameReq;
 import response.CreateGameResp;
 import response.ErrorMessagesResp;
 import service.CreateGameService;
@@ -26,8 +28,8 @@ public class CreateGameHandler implements Route {
     public Object handle(Request request, Response response) throws Exception {
         try {
             String token = request.headers("authorization");
-            String gameName = request.body();
-            CreateGameResp newResp = newGame.makeNewGame(gameDAO, authTokensDAO, token, gameName);
+            CreateGameReq newReq = SerializeUtils.fromJson(request.body(), CreateGameReq.class);
+            CreateGameResp newResp = newGame.makeNewGame(gameDAO, authTokensDAO, token, newReq.gameName());
             response.status(200);
             return SerializeUtils.toJson(newResp);
         }

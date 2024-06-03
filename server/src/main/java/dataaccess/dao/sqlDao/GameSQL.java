@@ -66,8 +66,7 @@ public class GameSQL implements GameDAO {
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("inlistgames");
+            } catch (SQLException e) {
                 throw new DataAccessException(e.getMessage());
             }
             return listOfGames;
