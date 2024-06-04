@@ -2,6 +2,7 @@ package dataaccess;
 
 import dataaccess.dao.sqldao.UserSQL;
 import model.UserData;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ public class UserSQLTest {
 
     @BeforeEach
     void setup() throws DataAccessException {
-        users = new UserSQL();
+        UserSQL users = new UserSQL();
         users.clear();
     }
 
@@ -22,6 +23,8 @@ public class UserSQLTest {
     void cleanUp() throws DataAccessException {
         users.clear();
     }
+
+
 
     @Test
     void testClearDB() throws DataAccessException {

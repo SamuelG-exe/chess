@@ -4,6 +4,7 @@ import dataaccess.dao.sqldao.AuthSQL;
 import dataaccess.dao.sqldao.UserSQL;
 import model.AuthData;
 import model.UserData;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.ServiceUtils;
@@ -21,6 +22,11 @@ public class AuthSQLTest {
     void setup() throws DataAccessException {
         users = new UserSQL();
         tokens = new AuthSQL();
+        tokens.clear();
+        users.clear();
+    }
+    @AfterEach
+    void cleanUp() throws DataAccessException {
         tokens.clear();
         users.clear();
     }
