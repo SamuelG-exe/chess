@@ -23,15 +23,17 @@ public class GameSQLTest {
     GameSQL games = new GameSQL();
 
     @BeforeEach
-    void setup() {
+    void setup() throws DataAccessException {
         users = new UserSQL();
         games = new GameSQL();
+        games.clear();
+        users.clear();
     }
 
     @AfterEach
     void cleanUp() throws DataAccessException {
-        users.clear();
         games.clear();
+        users.clear();
     }
 
     @Test
@@ -76,13 +78,45 @@ public class GameSQLTest {
     void testListGamePos() throws DataAccessException {
         games.createGame(new GameData("7", null, null, "nameOfGame", new ChessGame()));
         assertNotNull(games.listGames());
-
     }
 
     @Test
     void testListGameNeg() throws DataAccessException {
         assertEquals(0, games.listGames().size());
-
     }
 
+    @Test
+    void testUpdateGamePos() throws DataAccessException {
+        users.createUser(new UserData("whiteJoinTest", "password", "taco@tuesdays.com"));
+        ChessGame game = new ChessGame();
+        games.createGame(new GameData("7", null, null, "nameOfGame", game));
+
+        GameData gameUpdate = new GameData("7", "whiteJoinTest", null, "nameOfGame", game);
+        games.updateGame("7", gameUpdate);
+
+        assertEquals("whiteJoinTest", games.getGame("7").whiteUsername());
+    }
+
+    @Test
+    void testUpdateGameNeg() throws DataAccessException {
+        users.createUser(new UserData("whiteJoinTest", "password", "taco@tuesdays.com"));
+        ChessGame game = new ChessGame();
+        games.createGame(new GameData("7", null, null, "nameOfGame", game));
+
+        GameData gameUpdate = new GameData("7", "whiteJoinTest", null, "nameOfGame", game);
+        games.updateGame("5", gameUpdate);
+
+        assertNotEquals("whiteJoinTest", games.getGame("7").whiteUsername());
+
+    }
+    @Test
+    void testClear() throws DataAccessException {
+
+        assertEquals(0, games.size());
+        games.createGame(new GameData("7", null, null, "nameOfGame", new ChessGame()));
+        assertEquals(1, games.size());
+        games.clear();
+        assertEquals(0, games.size());
+
+    }
 }

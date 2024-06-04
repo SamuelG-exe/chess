@@ -9,6 +9,7 @@ import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import request.LoginReq;
 import response.LoginResp;
 
@@ -31,21 +32,22 @@ public class LoginServiceTest {
     void testLoginCorrect() throws DataAccessException {
         String authToken = "1234";
         String username = "SirChessGamer";
-        String passWord = "This is the right passWord";
+        String unHashed = "This is the right passWord";
+        String passWord = BCrypt.hashpw(unHashed, BCrypt.gensalt());
         String email = "user@ChessGamer.com";
         UserData newUser = new UserData(username,passWord, email);
 
         auths.createAuth(new AuthData(authToken, username));
         users.createUser(newUser);
 
-        LoginReq request = new LoginReq(username, passWord);
+        LoginReq request = new LoginReq(username, unHashed);
 
         LoginResp response = login.login(request, users, auths);
 
         assertEquals(1, ( users.size()));
         UserData loggedIn = (users.getUser(response.username()));
         assertEquals("SirChessGamer", loggedIn.username());
-        assertEquals("This is the right passWord", loggedIn.password());
+        assertEquals(passWord, loggedIn.password());
 
     }
 
@@ -53,7 +55,8 @@ public class LoginServiceTest {
     void testLoginWithWrongPassWord() throws DataAccessException {
         String authToken = "1234";
         String username = "SirChessGamer";
-        String passWord = "This is the right passWord";
+        String unHashed = "This is the right passWord";
+        String passWord = BCrypt.hashpw(unHashed, BCrypt.gensalt());
         String email = "user@ChessGamer.com";
         UserData newUser = new UserData(username,passWord, email);
 

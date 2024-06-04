@@ -5,6 +5,8 @@ import dataaccess.dao.AuthDAO;
 import dataaccess.dao.UserDAO;
 import dataaccess.dao.internaldao.AuthInternalDAO;
 import dataaccess.dao.internaldao.UserInternalDAO;
+import dataaccess.dao.sqlDao.AuthSQL;
+import dataaccess.dao.sqlDao.UserSQL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.RegisterReq;
@@ -18,9 +20,11 @@ public class RegisterServiceTest {
     private RegisterService makeNewUser;
 
     @BeforeEach
-    void setup() {
-        auths = new AuthInternalDAO();
-        users = new UserInternalDAO();
+    void setup() throws DataAccessException {
+        auths = new AuthSQL();
+        users = new UserSQL();
+        auths.clear();
+        users.clear();
         makeNewUser = new RegisterService();
     }
 
