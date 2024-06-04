@@ -1,5 +1,7 @@
 package dataaccess;
 
+import dataaccess.dao.sqldao.AuthSQL;
+import dataaccess.dao.sqldao.GameSQL;
 import dataaccess.dao.sqldao.UserSQL;
 import model.UserData;
 import org.junit.jupiter.api.AfterAll;
@@ -11,11 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserSQLTest {
     UserSQL users = new UserSQL();
+    AuthSQL tokens = new AuthSQL();
+    GameSQL games = new GameSQL();
 
 
     @BeforeEach
     void setup() throws DataAccessException {
-        UserSQL users = new UserSQL();
+        tokens.clear();
+        games.clear();
         users.clear();
     }
 
