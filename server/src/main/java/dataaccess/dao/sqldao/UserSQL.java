@@ -1,4 +1,4 @@
-package dataaccess.dao.sqlDao;
+package dataaccess.dao.sqldao;
 
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static dataaccess.dao.sqlDao.SQLUtills.executeUpdate;
+import static dataaccess.dao.sqldao.SQLUtills.executeUpdate;
 
 public class UserSQL implements UserDAO {
     int size = 0;

@@ -1,4 +1,4 @@
-package dataaccess.dao.sqlDao;
+package dataaccess.dao.sqldao;
 
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
@@ -6,7 +6,7 @@ import dataaccess.dao.AuthDAO;
 import model.AuthData;
 import java.sql.*;
 
-import static dataaccess.dao.sqlDao.SQLUtills.executeUpdate;
+import static dataaccess.dao.sqldao.SQLUtills.executeUpdate;
 
 public class AuthSQL implements AuthDAO {
     int size = 0;

@@ -1,10 +1,9 @@
-package dataaccess.dao.sqlDao;
+package dataaccess.dao.sqldao;
 
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;

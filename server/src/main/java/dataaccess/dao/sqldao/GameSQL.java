@@ -1,11 +1,10 @@
-package dataaccess.dao.sqlDao;
+package dataaccess.dao.sqldao;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.dao.GameDAO;
-import model.AuthData;
 import model.GameData;
 
 import java.sql.Connection;
@@ -14,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dataaccess.dao.sqlDao.SQLUtills.executeUpdate;
+import static dataaccess.dao.sqldao.SQLUtills.executeUpdate;
 
 public class GameSQL implements GameDAO {
 

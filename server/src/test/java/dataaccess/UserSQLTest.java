@@ -1,13 +1,10 @@
 package dataaccess;
 
-import dataaccess.dao.internaldao.AuthInternalDAO;
-import dataaccess.dao.internaldao.UserInternalDAO;
-import dataaccess.dao.sqlDao.UserSQL;
+import dataaccess.dao.sqldao.UserSQL;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.RegisterService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

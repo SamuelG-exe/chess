@@ -3,18 +3,12 @@ package server;
 
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
-import dataaccess.dao.internaldao.AuthInternalDAO;
-import dataaccess.dao.internaldao.GameInternalDAO;
-import dataaccess.dao.internaldao.UserInternalDAO;
-import dataaccess.dao.sqlDao.AuthSQL;
-import dataaccess.dao.sqlDao.GameSQL;
-import dataaccess.dao.sqlDao.UserSQL;
+import dataaccess.dao.sqldao.AuthSQL;
+import dataaccess.dao.sqldao.GameSQL;
+import dataaccess.dao.sqldao.UserSQL;
 import handler.*;
 import spark.*;
 import dataaccess.dao.*;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class Server {
 

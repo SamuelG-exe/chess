@@ -1,13 +1,9 @@
 package dataaccess;
 
-import chess.ChessGame;
-import dataaccess.dao.sqlDao.AuthSQL;
-import dataaccess.dao.sqlDao.GameSQL;
-import dataaccess.dao.sqlDao.UserSQL;
+import dataaccess.dao.sqldao.AuthSQL;
+import dataaccess.dao.sqldao.UserSQL;
 import model.AuthData;
-import model.GameData;
 import model.UserData;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.ServiceUtils;
