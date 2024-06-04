@@ -17,8 +17,8 @@ public class UserSQLTest {
 
     @BeforeEach
     void setup() throws DataAccessException {
-        users.clear();
         users = new UserSQL();
+        users.clear();
     }
 
     @AfterEach
