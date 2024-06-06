@@ -29,7 +29,7 @@ public class GameSQL implements GameDAO {
 
     @Override
     public GameData getGame(String gameID) throws DataAccessException {
-        var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM games WHERE gameID = ?";
+        var statement = "SELECT * FROM games WHERE gameID = ?";
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement stmt = connection.prepareStatement(statement)) {
             stmt.setInt(1, Integer.parseInt(gameID));
@@ -55,7 +55,7 @@ public class GameSQL implements GameDAO {
     public List<GameData> listGames() throws DataAccessException {
             List<GameData> listOfGames = new ArrayList<>();
             try (var conn = DatabaseManager.getConnection()) {
-                var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM games";
+                var statement = "SELECT * FROM games";
                 try (var ps = conn.prepareStatement(statement)) {
                     try (var rs = ps.executeQuery()) {
                         while (rs.next()) {
