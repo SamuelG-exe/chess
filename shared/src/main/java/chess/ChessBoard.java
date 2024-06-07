@@ -49,12 +49,13 @@ public class ChessBoard implements Cloneable{
         }
 
     }
-    void resethelperBackrow(int row, ChessGame.TeamColor pieceColor){
+    void resetHelperBackrow(int row, ChessGame.TeamColor pieceColor){
         ChessPosition pieceAdder= new ChessPosition(row, 1);
         addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.ROOK));
 
         pieceAdder= new ChessPosition(row, 2);
         addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.KNIGHT));
+
 
         pieceAdder= new ChessPosition(row, 3);
         addPiece(pieceAdder, new ChessPiece(pieceColor, ChessPiece.PieceType.BISHOP));
@@ -85,7 +86,7 @@ public class ChessBoard implements Cloneable{
         gameBoard = new ChessPiece[8][8];
         ///Reset Black
         //System.out.println("Statring backline Black");
-        resethelperBackrow(8, ChessGame.TeamColor.BLACK);
+        resetHelperBackrow(8, ChessGame.TeamColor.BLACK);
         //System.out.println("Starting front line Black");
         resethelperPawn(7, ChessGame.TeamColor.BLACK);
 
@@ -93,7 +94,7 @@ public class ChessBoard implements Cloneable{
         //System.out.println("Starting front line White");
         resethelperPawn(2, ChessGame.TeamColor.WHITE);
         //System.out.println("Starting back line white")
-        resethelperBackrow(1, ChessGame.TeamColor.WHITE);
+        resetHelperBackrow(1, ChessGame.TeamColor.WHITE);
 
     }
 
