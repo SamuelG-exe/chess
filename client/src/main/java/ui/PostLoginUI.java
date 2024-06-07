@@ -56,32 +56,26 @@ public class PostLoginUI {
     private void help(){
         setHelpText(out);
         out.print("\u2003" + "--help--" + "\u2003");
-        setBlack(out);
         out.println();
 
         setHelpText(out);
         out.print("Type \"logout\" to log out of the program");
-        setBlack(out);
         out.println();
 
         setHelpText(out);
         out.print("Type \"create game\" to create a new game");
-        setBlack(out);
         out.println();
 
         setHelpText(out);
         out.print("Type \"list games\" to list all the current games on the server");
-        setBlack(out);
         out.println();
 
         setHelpText(out);
         out.print("Type \"play game\" to play an existing game");
-        setBlack(out);
         out.println();
 
         setHelpText(out);
         out.print("Type \"observe game\" to observe an existing game");
-        setBlack(out);
         out.println();
     }
 
@@ -93,7 +87,8 @@ public class PostLoginUI {
         setHelpText(out);
 
         try{
-            server.logOut();
+            server.logOut(InteractiveUI.currentToken);
+            InteractiveUI.currentToken = null;
             return userStatus=UserStatus.LOGGEDOUT;
         } catch (Exception e) {
             out.println("Logout failed: " + e.getMessage());
@@ -109,7 +104,7 @@ public class PostLoginUI {
 
         CreateGameReq newGameReq = new CreateGameReq(gameName);
         try{
-            server.createGame(newGameReq);
+            server.createGame(newGameReq, InteractiveUI.currentToken);
             out.println("Congratulations! You have successfully Created a game (" +gameName+"), happy dueling!");
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
@@ -125,7 +120,7 @@ public class PostLoginUI {
         orderedMapOfGames.clear();
 
         try{
-            ListGamesResp listOfGamesResp = server.listGames();
+            ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
             List<GameData> listOfGames = listOfGamesResp.games();
             for (GameData game : listOfGames){
                 orderedMapOfGames.put(game.gameID(), game);
@@ -151,7 +146,7 @@ public class PostLoginUI {
         String teamCAPS = team.toUpperCase();
         JoinGameReq joinGame = new JoinGameReq(gameID,teamCAPS);
         try{
-            server.joinGame(joinGame);
+            server.joinGame(joinGame, InteractiveUI.currentToken);
             out.println("Congratulations! You sucessfuly Joined the game "+gameID+". Good Luck!");
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {

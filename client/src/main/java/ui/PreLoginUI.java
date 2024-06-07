@@ -2,10 +2,10 @@ package ui;
 
 import request.LoginReq;
 import request.RegisterReq;
+import response.LoginResp;
+import response.RegisterResp;
 
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -17,6 +17,7 @@ public class PreLoginUI {
     private String input;
     private UserStatus userStatus;
     private final PrintStream out;
+
 
 
     PreLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out){
@@ -63,7 +64,6 @@ public class PreLoginUI {
         for(int i = 0; i <= buffer; i++){
             out.print("\u2003");
         }
-        setBlack(out);
         out.println();
 
         setHelpText(out);
@@ -72,7 +72,6 @@ public class PreLoginUI {
         for(int i = 0; i <= buffer; i++){
             out.print("\u2003");
         }
-        setBlack(out);
         out.println();
 
         setHelpText(out);
@@ -81,12 +80,10 @@ public class PreLoginUI {
         for(int i = 0; i <= buffer; i++){
             out.print("\u2003");
         }
-        setBlack(out);
         out.println();
 
         setHelpText(out);
         out.print("Type \"register\" to create a new account with a unique username, password, and email");
-        setBlack(out);
         out.println();
 
         return userStatus = UserStatus.LOGGEDOUT;
@@ -106,7 +103,10 @@ public class PreLoginUI {
         String passWord = in.nextLine();
         LoginReq loginRequest = new LoginReq(userName, passWord);
         try{
-            server.login(loginRequest);
+            LoginResp logedIn = server.login(loginRequest);
+            out.println("Congratulations! You have successfully logged in!");
+            out.println("LOGGED IN AS: "+userName);
+            InteractiveUI.currentToken = logedIn.authToken();
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Login failed: " + e.getMessage());
@@ -129,9 +129,11 @@ public class PreLoginUI {
 
         RegisterReq registerReq = new RegisterReq(userName, passWord, email);
         try{
-            server.register(registerReq);
+            RegisterResp response = server.register(registerReq);
+            InteractiveUI.currentToken = response.authToken();
             out.println("Congratulations! You have successfully registered, go forth and serve a buttkicking!");
             out.println("LOGGED IN AS: "+userName);
+
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Registration failed: " + e.getMessage());
