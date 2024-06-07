@@ -26,7 +26,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade(Integer.toString(port));
+        facade = new ServerFacade("http://localhost:"+port);
     }
 
     @BeforeEach
@@ -128,13 +128,14 @@ public class ServerFacadeTests {
         RegisterReq registerReq = new RegisterReq("username", "password", "email");
         RegisterResp resp = facade.register(registerReq);
         String token = resp.authToken();
+
         LoginReq login = new LoginReq("username", "password");
         facade.login(login);
 
         CreateGameReq makegame = new CreateGameReq("newGame");
         CreateGameResp newGame = facade.createGame(makegame, token);
         assertThrows(Exception.class, () -> {
-            CreateGameResp newGameAgain = facade.createGame(makegame, token);
+            CreateGameResp newGameAgain = facade.createGame(makegame, "bananna");
         });
     }
 
@@ -173,6 +174,7 @@ public class ServerFacadeTests {
 
     @Test
     void testJoinGamePos() throws Exception {
+        facade.clearDataBase();
         RegisterReq registerReq = new RegisterReq("username", "password", "email");
         RegisterResp resp = facade.register(registerReq);
         String token = resp.authToken();
@@ -181,10 +183,12 @@ public class ServerFacadeTests {
 
         CreateGameReq makegame = new CreateGameReq("newGame");
         CreateGameResp newGame = facade.createGame(makegame, token);
-        ListGamesResp listGamesResp = facade.listGames(token);
+
 
 
         JoinGameReq join = new JoinGameReq("WHITE", newGame.gameID());
+        facade.joinGame(join, token);
+        ListGamesResp listGamesResp = facade.listGames(token);
 
         assertEquals("username", listGamesResp.games().getFirst().whiteUsername());
     }
@@ -203,6 +207,7 @@ public class ServerFacadeTests {
 
         assertThrows(Exception.class, () -> {
             JoinGameReq join = new JoinGameReq("TACO", newGame.gameID());
+            facade.joinGame(join, token);
 
         });
 
@@ -225,21 +230,11 @@ public class ServerFacadeTests {
 
         assertEquals(listGamesResp.games().size(), 1);
         facade.clearDataBase();
+        registerReq = new RegisterReq("username", "password", "email");
+        resp = facade.register(registerReq);
+        token = resp.authToken();
         ListGamesResp listGamesResp2 = facade.listGames(token);
         assertEquals(listGamesResp2.games().size(), 0);
-
-    }
-
-    @Test
-    void testClearNeg() throws Exception {
-        RegisterReq registerReq = new RegisterReq("username", "password", "email");
-        RegisterResp resp = facade.register(registerReq);
-        String token = resp.authToken();
-
-        assertThrows(Exception.class, () -> {
-            facade.clearDataBase();
-
-        });
 
     }
 }

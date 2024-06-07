@@ -42,7 +42,7 @@ public class ServerFacade {
         return this.makeRequest("POST", "/game", newGame, CreateGameResp.class, authToken);
     }
 
-    void joinGame(JoinGameReq gameJoin, String  authToken) throws Exception {
+    public void joinGame(JoinGameReq gameJoin, String  authToken) throws Exception {
         this.makeRequest("PUT", "/game", gameJoin, null, authToken);
     }
 
