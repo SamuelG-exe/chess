@@ -1,6 +1,7 @@
 package ui;
 
 import request.LoginReq;
+import request.RegisterReq;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -26,16 +27,26 @@ public class PreLoginUI {
     }
 
     public UserStatus run() {
-        while(userStatus==UserStatus.LOGGEDOUT) {
-            switch (input) {
-                case -> "help"; //call function
-                case -> "quit"
-                case -> "login"
-                case -> "register"
-            }
+        while (userStatus == UserStatus.LOGGEDOUT) {
+                switch (input) {
+                    case "help": help();
+                        break;
+                    case "quit": quit();
+                        break;
+                    case "login": userStatus = logIn();
+                        break;
+                    case "register": userStatus = register();
+                        break;
+                    default:
+                        out.println("Unknown Request. Type \"help\" for a list of available commands.");
+                        break;
+                }
 
+            }
+        return userStatus;
         }
-    }
+
+
 
     private void help(){
         setHelpText(out);
@@ -76,11 +87,12 @@ public class PreLoginUI {
             server.login(loginRequest);
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            out.println("Login failed: " + e.getMessage());
+            return userStatus = UserStatus.LOGGEDOUT;
         }
     }
 
-    private UserStatus logIn(){
+    private UserStatus register(){
         setHelpText(out);
         out.println("Please enter your unique Username -->");
         Scanner in = new Scanner(System.in);
@@ -88,12 +100,21 @@ public class PreLoginUI {
 
         out.println("Please enter your unique Password -->");
         String passWord = in.nextLine();
-        LoginReq loginRequest = new LoginReq(userName, passWord);
+
+        out.println("Please enter your unique Email -->");
+        String email = in.nextLine();
+
+
+        RegisterReq registerReq = new RegisterReq(userName, passWord, email);
         try{
-            server.login(loginRequest);
+            server.register(registerReq);
+            out.println("Congratulations! You have successfully registered, go forth and serve a buttkicking!");
+            out.println("LOGGED IN AS: "+userName);
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            out.println("Registration failed: " + e.getMessage());
+            return userStatus = UserStatus.LOGGEDOUT;
+
         }
     }
 
