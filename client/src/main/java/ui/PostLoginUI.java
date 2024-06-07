@@ -58,22 +58,32 @@ public class PostLoginUI {
 
     private void help(){
         setHelpText(out);
-        out.print("\u2003"+ "--help--"+ "\u2003");
+        out.print("\u2003" + "--help--" + "\u2003");
         setBlack(out);
         out.println();
 
         setHelpText(out);
-        out.print("Type \"quit\" to exit the program");
+        out.print("Type \"logout\" to log out of the program");
         setBlack(out);
         out.println();
 
         setHelpText(out);
-        out.print("Type \"login\" to Login by inputing your UserName and Password");
+        out.print("Type \"create game\" to create a new game");
         setBlack(out);
         out.println();
 
         setHelpText(out);
-        out.print("Type \"register\" to create a new account with a unique username, password, and email");
+        out.print("Type \"list games\" to list all the current games on the server");
+        setBlack(out);
+        out.println();
+
+        setHelpText(out);
+        out.print("Type \"play game\" to play an existing game");
+        setBlack(out);
+        out.println();
+
+        setHelpText(out);
+        out.print("Type \"observe game\" to observe an existing game");
         setBlack(out);
         out.println();
     }
@@ -190,4 +200,4 @@ public class PostLoginUI {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 }
-}
+
