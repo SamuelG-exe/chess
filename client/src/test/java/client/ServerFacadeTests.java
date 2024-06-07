@@ -79,6 +79,36 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void testLogOutPos() throws Exception {
+        RegisterReq registerReq = new RegisterReq("username", "password", "email");
+        RegisterResp resp = facade.register(registerReq);
+        String token = resp.authToken();
+
+        LoginReq login = new LoginReq("username", "password");
+        LoginResp loggedIn = facade.login(login);
+        facade.logOut(token);
+
+        assertThrows(Exception.class, () -> {
+            facade.listGames(token);
+        });
+    }
+
+    @Test
+    void testLogOutNeg() throws Exception {
+        RegisterReq registerReq = new RegisterReq("username", "password", "email");
+        RegisterResp resp = facade.register(registerReq);
+        String token = resp.authToken();
+        String wrongtoken = "shouldntWork";
+        LoginReq login = new LoginReq("username", "password");
+        LoginResp loggedIn = facade.login(login);
+
+
+        assertThrows(Exception.class, () -> {
+            facade.logOut(wrongtoken);
+        });
+    }
+
+    @Test
     void testCreateGamePos() throws Exception {
         RegisterReq registerReq = new RegisterReq("username", "password", "email");
         RegisterResp resp = facade.register(registerReq);
@@ -195,7 +225,21 @@ public class ServerFacadeTests {
 
         assertEquals(listGamesResp.games().size(), 1);
         facade.ClearDataBase();
-        assertEquals(listGamesResp.games().size(), 0);
+        ListGamesResp listGamesResp2 = facade.listGames(token);
+        assertEquals(listGamesResp2.games().size(), 0);
+
+    }
+
+    @Test
+    void testClearNeg() throws Exception {
+        RegisterReq registerReq = new RegisterReq("username", "password", "email");
+        RegisterResp resp = facade.register(registerReq);
+        String token = resp.authToken();
+
+        assertThrows(Exception.class, () -> {
+            facade.ClearDataBase();
+
+        });
 
     }
 }
