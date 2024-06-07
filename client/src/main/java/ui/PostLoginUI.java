@@ -3,6 +3,7 @@ package ui;
 import model.GameData;
 import request.CreateGameReq;
 import request.JoinGameReq;
+import response.CreateGameResp;
 import response.ListGamesResp;
 
 import java.io.PrintStream;
@@ -104,8 +105,8 @@ public class PostLoginUI {
 
         CreateGameReq newGameReq = new CreateGameReq(gameName);
         try{
-            server.createGame(newGameReq, InteractiveUI.currentToken);
-            out.println("Congratulations! You have successfully Created a game (" +gameName+"), happy dueling!");
+            CreateGameResp createdGame = server.createGame(newGameReq, InteractiveUI.currentToken);
+            out.println("Congratulations! You have successfully Created a game (GameName: "+gameName +" GameID: " +createdGame.gameID()+"), happy dueling!");
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game creation failed: " + e.getMessage());
