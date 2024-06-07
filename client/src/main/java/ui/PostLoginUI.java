@@ -31,11 +31,10 @@ public class PostLoginUI {
     }
 
     public UserStatus run() {
-        while (userStatus != UserStatus.LOGGEDOUT) {
             switch (input) {
                 case "help": help();
                     break;
-                case "logout": quit();
+                case "logout": logOut();
                     break;
                 case "create game": userStatus = createGame();
                     break;
@@ -49,8 +48,6 @@ public class PostLoginUI {
                     out.println("Unknown Request. Type \"help\" for a list of available commands.");
                     break;
             }
-
-        }
         return userStatus;
     }
 
@@ -92,7 +89,7 @@ public class PostLoginUI {
         System.exit(0);
     }
 
-    private UserStatus Logout(){
+    private UserStatus logOut(){
         setHelpText(out);
 
         try{

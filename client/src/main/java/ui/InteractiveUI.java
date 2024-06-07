@@ -4,6 +4,8 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import static ui.EscapeSequences.*;
+
 
 public class InteractiveUI {
     public static void main(String[] args) {
@@ -17,17 +19,29 @@ public class InteractiveUI {
 
 
         while (userStatus == UserStatus.LOGGEDOUT) {
+            out.print(SET_BG_COLOR_BLUE);
+            out.print(SET_TEXT_COLOR_BLACK);
             out.print("Enter a command (help, quit, login, register): ");
+            setBlack(out);
+            out.println();
             String input = scanner.nextLine().toLowerCase();
             PreLoginUI preLoginUI = new PreLoginUI(server, input, userStatus, out);
             userStatus=preLoginUI.run();
         }
 
         while (userStatus == UserStatus.LOGGEDIN) {
+            out.print(SET_BG_COLOR_BLUE);
+            out.print(SET_TEXT_COLOR_BLACK);
             out.print("Enter a command (help, logout, create game, list games, play game, observe game): ");
+            setBlack(out);
+            out.println();
             String input = scanner.nextLine().toLowerCase();
             PostLoginUI postLoginUI = new PostLoginUI(server,input,userStatus,out);
             userStatus=postLoginUI.run();
         }
+    }
+    private static void setBlack(PrintStream out) {
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_BLACK);
     }
 }

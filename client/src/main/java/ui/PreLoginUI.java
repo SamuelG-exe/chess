@@ -27,30 +27,34 @@ public class PreLoginUI {
     }
 
     public UserStatus run() {
-        while (userStatus == UserStatus.LOGGEDOUT) {
-                switch (input) {
-                    case "help": help();
-                        break;
-                    case "quit": quit();
-                        break;
-                    case "login": userStatus = logIn();
-                        break;
-                    case "register": userStatus = register();
-                        break;
-                    default:
-                        out.println("Unknown Request. Type \"help\" for a list of available commands.");
-                        break;
-                }
-
-            }
-        return userStatus;
+        switch (input) {
+            case "help":
+                userStatus = help();
+                break;
+            case "quit":
+                quit();
+                break;
+            case "login":
+                userStatus = logIn();
+                break;
+            case "register":
+                userStatus = register();
+                break;
+            default:
+                out.println("Unknown Request. Type \"help\" for a list of available commands.");
+                break;
         }
+        return userStatus;
+    }
 
 
 
-    private void help(){
+    private UserStatus help(){
+        String longetString ="Type \\\"register\\\" to create a new account with a unique username, password, and email";
+        int sizeOfHelp = longetString.length();
+
         setHelpText(out);
-        out.print("\u2003"+ "--help--"+ "\u2003");
+        out.print("\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+ "--help--"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+ "\u2003");
         setBlack(out);
         out.println();
 
@@ -68,6 +72,8 @@ public class PreLoginUI {
         out.print("Type \"register\" to create a new account with a unique username, password, and email");
         setBlack(out);
         out.println();
+
+        return userStatus = UserStatus.LOGGEDOUT;
     }
 
     private void quit(){
