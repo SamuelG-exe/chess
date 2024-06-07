@@ -179,11 +179,6 @@ public class DrawChess {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void setWhite(PrintStream out) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-    }
-
 }
 
 

@@ -31,7 +31,7 @@ public class ServerFacadeTests {
 
     @BeforeEach
     void resetDB() throws Exception {
-        facade.ClearDataBase();
+        facade.clearDataBase();
     }
 
     @AfterAll
@@ -224,7 +224,7 @@ public class ServerFacadeTests {
         ListGamesResp listGamesResp = facade.listGames(token);
 
         assertEquals(listGamesResp.games().size(), 1);
-        facade.ClearDataBase();
+        facade.clearDataBase();
         ListGamesResp listGamesResp2 = facade.listGames(token);
         assertEquals(listGamesResp2.games().size(), 0);
 
@@ -237,7 +237,7 @@ public class ServerFacadeTests {
         String token = resp.authToken();
 
         assertThrows(Exception.class, () -> {
-            facade.ClearDataBase();
+            facade.clearDataBase();
 
         });
 

@@ -19,7 +19,7 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public void ClearDataBase() throws Exception{
+    public void clearDataBase() throws Exception{
         this.makeRequest("DELETE", "/db",null, null, null);
     }
     public RegisterResp register(RegisterReq newUser) throws Exception {
