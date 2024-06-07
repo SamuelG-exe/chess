@@ -3,12 +3,11 @@ package ui;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import request.CreateGameReq;
+import request.JoinGameReq;
 import request.LoginReq;
 import request.RegisterReq;
-import response.ErrorMessagesResp;
-import response.ListGamesResp;
-import response.LoginResp;
-import response.RegisterResp;
+import response.*;
 
 import java.io.*;
 import java.net.*;
@@ -38,7 +37,15 @@ public class ServerFacade {
     }
 
     public ListGamesResp listGames() throws Exception {
-        return this.makeRequest("delete", "/session", null, null);
+        return this.makeRequest("get", "/game", null, ListGamesResp.class);
+    }
+
+    public CreateGameResp createGame(CreateGameReq newGame) throws Exception {
+        return this.makeRequest("post", "/game", newGame, CreateGameResp.class);
+    }
+
+    void joinGame(JoinGameReq gameJoin) throws Exception {
+        this.makeRequest("put", "/game", gameJoin, null);
     }
 
 
