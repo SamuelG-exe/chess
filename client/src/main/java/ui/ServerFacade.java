@@ -22,30 +22,30 @@ public class ServerFacade {
     }
 
     public void ClearDB() throws Exception{
-        this.makeRequest("delete", "/db",null, null);
+        this.makeRequest("DELETE", "/db",null, null);
     }
     public RegisterResp register(RegisterReq newUser) throws Exception {
-        return this.makeRequest("post", "/user", newUser, RegisterResp.class);
+        return this.makeRequest("POST", "/user", newUser, RegisterResp.class);
     }
 
     public LoginResp login(LoginReq returningUser) throws Exception {
-        return this.makeRequest("post", "/session", returningUser, LoginResp.class);
+        return this.makeRequest("POST", "/session", returningUser, LoginResp.class);
     }
 
     public void logOut() throws Exception {
-        this.makeRequest("delete", "/session", null, null);
+        this.makeRequest("DELETE", "/session", null, null);
     }
 
     public ListGamesResp listGames() throws Exception {
-        return this.makeRequest("get", "/game", null, ListGamesResp.class);
+        return this.makeRequest("GET", "/game", null, ListGamesResp.class);
     }
 
     public CreateGameResp createGame(CreateGameReq newGame) throws Exception {
-        return this.makeRequest("post", "/game", newGame, CreateGameResp.class);
+        return this.makeRequest("POST", "/game", newGame, CreateGameResp.class);
     }
 
     void joinGame(JoinGameReq gameJoin) throws Exception {
-        this.makeRequest("put", "/game", gameJoin, null);
+        this.makeRequest("PUT", "/game", gameJoin, null);
     }
 
 

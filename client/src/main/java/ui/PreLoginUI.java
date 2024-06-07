@@ -41,6 +41,7 @@ public class PreLoginUI {
                 userStatus = register();
                 break;
             default:
+                setHelpText(out);
                 out.println("Unknown Request. Type \"help\" for a list of available commands.");
                 break;
         }
@@ -50,21 +51,36 @@ public class PreLoginUI {
 
 
     private UserStatus help(){
-        String longetString ="Type \\\"register\\\" to create a new account with a unique username, password, and email";
-        int sizeOfHelp = longetString.length();
+        int longetString ="Type \\\"register\\\" to create a new account with a unique username, password, and email".length();
+        int helpLength = "----help----".length();
+        int sizeOfHelp = longetString - helpLength;
+        int buffer = sizeOfHelp/2;
+
+
 
         setHelpText(out);
-        out.print("\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+ "--help--"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+"\u2003"+ "\u2003"+ "\u2003"+ "\u2003"+ "\u2003");
+        out.print("          ----help---- ");
+        for(int i = 0; i <= buffer; i++){
+            out.print("\u2003");
+        }
         setBlack(out);
         out.println();
 
         setHelpText(out);
-        out.print("Type \"quit\" to exit the program");
+        buffer =( longetString - "Type \"quit\" to exit the program".length())/2;
+        out.print("Type \"quit\" to exit the program       ");
+        for(int i = 0; i <= buffer; i++){
+            out.print("\u2003");
+        }
         setBlack(out);
         out.println();
 
         setHelpText(out);
-        out.print("Type \"login\" to Login by inputing your UserName and Password");
+        buffer =( longetString - "Type \"login\" to Login by imputing your UserName and Password".length())/2;
+        out.print("Type \"login\" to Login by imputing your UserName and Password  ");
+        for(int i = 0; i <= buffer; i++){
+            out.print("\u2003");
+        }
         setBlack(out);
         out.println();
 
