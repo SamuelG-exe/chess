@@ -1,8 +1,5 @@
 package client;
 
-import chess.ChessGame;
-import dataaccess.DataAccessException;
-import model.GameData;
 import org.junit.jupiter.api.*;
 import request.CreateGameReq;
 import request.JoinGameReq;
@@ -34,7 +31,7 @@ public class ServerFacadeTests {
 
     @BeforeEach
     void resetDB() throws Exception {
-        facade.ClearDB();
+        facade.ClearDataBase();
     }
 
     @AfterAll
@@ -197,7 +194,7 @@ public class ServerFacadeTests {
         ListGamesResp listGamesResp = facade.listGames(token);
 
         assertEquals(listGamesResp.games().size(), 1);
-        facade.ClearDB();
+        facade.ClearDataBase();
         assertEquals(listGamesResp.games().size(), 0);
 
     }

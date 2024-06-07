@@ -2,7 +2,6 @@ package ui;
 
 
 import com.google.gson.Gson;
-import model.AuthData;
 import request.CreateGameReq;
 import request.JoinGameReq;
 import request.LoginReq;
@@ -11,7 +10,6 @@ import response.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.List;
 
 public class ServerFacade {
 
@@ -21,7 +19,7 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public void ClearDB() throws Exception{
+    public void ClearDataBase() throws Exception{
         this.makeRequest("DELETE", "/db",null, null, null);
     }
     public RegisterResp register(RegisterReq newUser) throws Exception {

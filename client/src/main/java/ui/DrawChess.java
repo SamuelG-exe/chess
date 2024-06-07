@@ -153,17 +153,16 @@ public class DrawChess {
 
     private static void printSquareWhite(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
         out.print(SET_BG_COLOR_LIGHT_BROWN);
-        if(teamColor == ChessGame.TeamColor.WHITE){
-            out.print(SET_TEXT_COLOR_WHITE);
-            out.print(piece);
-        }
-        else{out.print(SET_TEXT_COLOR_BLACK);
-            out.print(piece);}
+        setPieceColor(out, piece, teamColor);
 
 
     }
+
     private static void printSquareBlack(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
         out.print(SET_BG_COLOR_DARK_BROWN);
+        setPieceColor(out, piece, teamColor);
+    }
+    private static void setPieceColor(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
         if(teamColor == ChessGame.TeamColor.WHITE){
             out.print(SET_TEXT_COLOR_WHITE);
             out.print(piece);
@@ -171,9 +170,10 @@ public class DrawChess {
         else{
             out.print(SET_TEXT_COLOR_BLACK);
             out.print(piece);}
-
-
     }
+
+
+    
     private static void setBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);

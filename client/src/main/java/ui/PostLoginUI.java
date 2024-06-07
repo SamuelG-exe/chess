@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
+import static ui.PreLoginUI.setHelpText;
 
 public class PostLoginUI {
     private ServerFacade server;
@@ -170,27 +171,8 @@ public class PostLoginUI {
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
-
         }
     }
 
-
-
-
-
-    private static void setBlack(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
-    }
-
-    private static void setWhite(PrintStream out) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_WHITE);
-    }
-
-    private static void setHelpText(PrintStream out) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(SET_TEXT_COLOR_WHITE);
-    }
 }
 
