@@ -12,7 +12,7 @@ import static ui.EscapeSequences.*;
 
 
 public class DrawChess {
-    static ChessBoard gameBoard = new ChessBoard();
+    static ChessBoard gameBoardInternal = new ChessBoard();
     private static final String EMPTY = EscapeSequences.EMPTY;
 
 
@@ -23,24 +23,20 @@ public class DrawChess {
         //clear
         out.print(ERASE_SCREEN);
 
-
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
-
-
-
-        drawBoardWhite(out, gameBoard);
+        drawBoardWhite(out, gameBoardInternal);
 
         out.println();
 
-        drawBoardBlack(out, gameBoard);
+        drawBoardBlack(out, gameBoardInternal);
 
 
     }
 
 
-    private static void drawBoardWhite(PrintStream out, ChessBoard gameBoard) {
+    public static void drawBoardWhite(PrintStream out, ChessBoard gameBoard) {
+        gameBoardInternal = gameBoard;
         gameBoard.resetBoard();
+        out.println();
         drawHeaderWhite(out);
         int count = 8;
 
@@ -62,8 +58,10 @@ public class DrawChess {
         drawHeaderWhite(out);
     }
 
-    private static void drawBoardBlack(PrintStream out, ChessBoard gameBoard) {
+    public static void drawBoardBlack(PrintStream out, ChessBoard gameBoard) {
+        gameBoardInternal = gameBoard;
         gameBoard.resetBoard();
+        out.println();
         drawHeaderBlack(out);
         int count = 1;
 
@@ -87,7 +85,7 @@ public class DrawChess {
 
     private static void drawBoardHelper(PrintStream out, int i, int j) {
         ChessPosition cord = new ChessPosition(i, j);
-        ChessPiece thisPiece = gameBoard.getPiece(cord);
+        ChessPiece thisPiece = gameBoardInternal.getPiece(cord);
         String stringOfPiece;
         ChessGame.TeamColor teamColor = null;
 
@@ -154,8 +152,6 @@ public class DrawChess {
     private static void printSquareWhite(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
         out.print(SET_BG_COLOR_LIGHT_BROWN);
         setPieceColor(out, piece, teamColor);
-
-
     }
 
     private static void printSquareBlack(PrintStream out, String piece, ChessGame.TeamColor teamColor) {

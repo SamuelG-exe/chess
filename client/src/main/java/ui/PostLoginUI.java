@@ -23,13 +23,21 @@ public class PostLoginUI {
     private final PrintStream out;
     Map<String,GameData> orderedMapOfGames = new HashMap<>();
 
-
-
-    PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out){
+    PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out) {
         this.server = server;
         this.input = input;
         this.userStatus = userStatus;
         this.out = out;
+
+        try {
+            ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
+            List<GameData> listOfGames = listOfGamesResp.games();
+            for (GameData game : listOfGames) {
+                orderedMapOfGames.put(game.gameID(), game);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public UserStatus run() {
@@ -108,6 +116,13 @@ public class PostLoginUI {
         try{
             CreateGameResp createdGame = server.createGame(newGameReq, InteractiveUI.currentToken);
             out.println("Congratulations! You have successfully Created a game (GameName: "+gameName +" GameID: " +createdGame.gameID()+"), happy dueling!");
+
+            ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
+            List<GameData> listOfGames = listOfGamesResp.games();
+            for (GameData game : listOfGames){
+                orderedMapOfGames.put(game.gameID(), game);
+            }
+
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game creation failed: " + e.getMessage());
@@ -146,10 +161,19 @@ public class PostLoginUI {
         String team = in.nextLine();
 
         String teamCAPS = team.toUpperCase();
-        JoinGameReq joinGame = new JoinGameReq(gameID,teamCAPS);
+        JoinGameReq joinGame = new JoinGameReq(teamCAPS,gameID);
+        GameData gameToBeJoined = orderedMapOfGames.get(gameID);
+
         try{
             server.joinGame(joinGame, InteractiveUI.currentToken);
             out.println("Congratulations! You sucessfuly Joined the game "+gameID+". Good Luck!");
+            if(teamCAPS.equals("BLACK")){
+                DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard());
+            }
+            else{
+                DrawChess.drawBoardWhite(out, gameToBeJoined.game().getBoard());
+
+            }
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game join failed: " + e.getMessage());
@@ -167,6 +191,8 @@ public class PostLoginUI {
 
         try{
             GameData gametoWatch = orderedMapOfGames.get(gameID);
+            DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard());
+            DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard());
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());
