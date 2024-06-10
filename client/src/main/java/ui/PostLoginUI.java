@@ -7,10 +7,7 @@ import response.CreateGameResp;
 import response.ListGamesResp;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
@@ -21,19 +18,23 @@ public class PostLoginUI {
     private String input;
     private UserStatus userStatus;
     private final PrintStream out;
-    Map<String,GameData> orderedMapOfGames = new HashMap<>();
+
+    private int count;
+    Map<Integer,GameData> orderedMapOfGames = new HashMap<>();
 
     PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out) {
         this.server = server;
         this.input = input;
         this.userStatus = userStatus;
         this.out = out;
+        this.count = 1;
 
         try {
             ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
             List<GameData> listOfGames = listOfGamesResp.games();
             for (GameData game : listOfGames) {
-                orderedMapOfGames.put(game.gameID(), game);
+                orderedMapOfGames.put(count, game);
+                count++;
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -107,6 +108,8 @@ public class PostLoginUI {
     }
 
     private UserStatus createGame(){
+
+
         setHelpText(out);
         out.println("Please enter a name for your game -->");
         Scanner in = new Scanner(System.in);
@@ -114,14 +117,19 @@ public class PostLoginUI {
 
         CreateGameReq newGameReq = new CreateGameReq(gameName);
         try{
+            int thisGameID =-1;
             CreateGameResp createdGame = server.createGame(newGameReq, InteractiveUI.currentToken);
-            out.println("Congratulations! You have successfully Created a game (GameName: "+gameName +" GameID: " +createdGame.gameID()+"), happy dueling!");
-
             ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
             List<GameData> listOfGames = listOfGamesResp.games();
-            for (GameData game : listOfGames){
-                orderedMapOfGames.put(game.gameID(), game);
+            count = 1;
+            for (GameData game : listOfGames) {
+                orderedMapOfGames.put(count, game);
+                if (Objects.equals(game.gameID(), createdGame.gameID())){thisGameID = count;}
+                count++;
             }
+
+            out.println("Congratulations! You have successfully Created a game (GameName: "+gameName +", GameID: " +thisGameID+"), happy dueling!");
+
 
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
@@ -135,14 +143,21 @@ public class PostLoginUI {
         setHelpText(out);
 
         orderedMapOfGames.clear();
+        count = 1;
 
         try{
             ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
             List<GameData> listOfGames = listOfGamesResp.games();
             for (GameData game : listOfGames){
-                orderedMapOfGames.put(game.gameID(), game);
+                orderedMapOfGames.put(count, game);
+                count++;
             }
-            orderedMapOfGames.forEach((id, gameData) -> out.println(gameData.toString()));
+            orderedMapOfGames.forEach((id, gameData) -> out.println(
+                            "Game ID:"+id +
+                            ", Game Name: "+ gameData.gameName() +
+                            ", White Player: "+ (gameData.whiteUsername() != null ? gameData.whiteUsername() : "{ AVAILABLE }")+
+                            ", Black Player: "+ (gameData.blackUsername() != null ? gameData.blackUsername() : "{ AVAILABLE }")+ "\n"
+                    ));
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());
@@ -153,16 +168,24 @@ public class PostLoginUI {
 
     private UserStatus playGame(){
         setHelpText(out);
+
         out.println("Please enter the ID number of the game you would like to join -->");
         Scanner in = new Scanner(System.in);
         String gameID = in.nextLine();
+        GameData gameToBeJoined = orderedMapOfGames.get(Integer.parseInt(gameID));
+        String blackplayer = gameToBeJoined.blackUsername();
+        String whitePlayer = gameToBeJoined.whiteUsername();
 
-        out.println("Perfect, now what team would you like to join? (White/Black) -->");
+        if(blackplayer == null ){blackplayer = "AVAILABLE";}
+        if(whitePlayer == null ){whitePlayer = "AVAILABLE";}
+
+
+
+        out.println("Perfect, now what team would you like to join? White = \""+whitePlayer+"\" Black = \""+blackplayer+ "\"-->");
         String team = in.nextLine();
 
         String teamCAPS = team.toUpperCase();
-        JoinGameReq joinGame = new JoinGameReq(teamCAPS,gameID);
-        GameData gameToBeJoined = orderedMapOfGames.get(gameID);
+        JoinGameReq joinGame = new JoinGameReq(teamCAPS,gameToBeJoined.gameID());
 
         try{
             server.joinGame(joinGame, InteractiveUI.currentToken);
@@ -190,7 +213,7 @@ public class PostLoginUI {
 
 
         try{
-            GameData gametoWatch = orderedMapOfGames.get(gameID);
+            GameData gametoWatch = orderedMapOfGames.get(Integer.parseInt(gameID));
             DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard());
             DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard());
             return userStatus=UserStatus.LOGGEDIN;
