@@ -176,8 +176,8 @@ public class PostLoginUI {
         String blackplayer = gameToBeJoined.blackUsername();
         String whitePlayer = gameToBeJoined.whiteUsername();
 
-        if(blackplayer == null ){blackplayer = "AVAILABLE";}
-        if(whitePlayer == null ){whitePlayer = "AVAILABLE";}
+        if(blackplayer == null ){blackplayer = "{ AVAILABLE }";}
+        if(whitePlayer == null ){whitePlayer = "{ AVAILABLE }";}
 
 
 
