@@ -114,6 +114,7 @@ public class DrawChess {
 
 
     private static void drawHeaderWhite(PrintStream out) {
+        out.print(RESET_TEXT_BOLD_FAINT);
         String[] headers = {"A", "B", "C", "D", "E", "F", "G", "H"};
         drawHeader(out, headers);
 
@@ -123,6 +124,7 @@ public class DrawChess {
 
     private static void drawHeaderBlack(PrintStream out) {
         String[] headers = {"H", "G", "F", "E", "D", "C", "B", "A"};
+        out.print(RESET_TEXT_BOLD_FAINT);
         drawHeader(out, headers);
 
         setBlack(out);

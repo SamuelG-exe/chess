@@ -1,5 +1,10 @@
 package ui;
 
+import java.io.PrintStream;
+import java.util.Objects;
+
+import static ui.PreLoginUI.setHelpText;
+
 /**
  * This class contains constants and functions relating to ANSI Escape Sequences that are useful in the Client display
  */
@@ -65,4 +70,34 @@ public class EscapeSequences {
     public static final String EMPTY = " \u2003 ";
 
     public static String moveCursorToLocation(int x, int y) { return UNICODE_ESCAPE + "[" + y + ";" + x + "H"; }
+
+    public static void toTerminal(PrintStream out, String message){
+        if(!Objects.equals(message, "Enter a command (help, quit, login, register): ")){
+            if(!Objects.equals(message, "Enter a command (help, logout, create game, list games, play game, observe game): ")){
+                setHelpText(out);
+            }
+        }
+
+        int length = message.length();
+        int totalLength = 127;
+
+        length += message.replaceAll("\u001B\\[[;\\d]*m", "").length() - length;
+
+        int padding = totalLength - length;
+
+        out.print(message);
+
+        for (int i = 0; i < padding; i++) {
+            out.print(" ");
+        }
+
+        out.print(RESET_BG_COLOR);
+        out.println();
+
+    }
+
+    private static void setBlack(PrintStream out) {
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
 }

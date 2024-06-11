@@ -83,7 +83,7 @@ public class PreLoginUI {
         out.println();
 
         setHelpText(out);
-        out.print("Type \"register\" to create a new account with a unique username, password, and email");
+        toTerminal(out,"Type \"register\" to create a new account with a unique username, password, and email");
         out.println();
 
         return userStatus = UserStatus.LOGGEDOUT;
@@ -95,35 +95,36 @@ public class PreLoginUI {
 
     private UserStatus logIn(){
         setHelpText(out);
-        out.println("Please enter your unique Username -->");
+        toTerminal(out,"Please enter your unique Username -->");
         Scanner in = new Scanner(System.in);
         String userName = in.nextLine();
 
-        out.println("Please enter your unique Password -->");
+
+        toTerminal(out,"Please enter your unique Password -->");
         String passWord = in.nextLine();
         LoginReq loginRequest = new LoginReq(userName, passWord);
         try{
             LoginResp logedIn = server.login(loginRequest);
-            out.println("Congratulations! You have successfully logged in!");
-            out.println("LOGGED IN AS: "+userName);
+            toTerminal(out,"Congratulations! You have successfully logged in!");
+            toTerminal(out,"LOGGED IN AS: "+userName);
             InteractiveUI.currentToken = logedIn.authToken();
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            out.println("Login failed: " + e.getMessage());
+            toTerminal(out,"Login failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDOUT;
         }
     }
 
     private UserStatus register(){
         setHelpText(out);
-        out.println("Please enter your unique Username -->");
+        toTerminal(out,"Please enter your unique Username -->");
         Scanner in = new Scanner(System.in);
         String userName = in.nextLine();
 
-        out.println("Please enter your unique Password -->");
+        toTerminal(out,"Please enter your unique Password -->");
         String passWord = in.nextLine();
 
-        out.println("Please enter your unique Email -->");
+        toTerminal(out,"Please enter your unique Email -->");
         String email = in.nextLine();
 
 
@@ -131,12 +132,12 @@ public class PreLoginUI {
         try{
             RegisterResp response = server.register(registerReq);
             InteractiveUI.currentToken = response.authToken();
-            out.println("Congratulations! You have successfully registered, go forth and serve a buttkicking!");
-            out.println("LOGGED IN AS: "+userName);
+            toTerminal(out,"Congratulations! You have successfully registered, go forth and serve a buttkicking!");
+            toTerminal(out,"LOGGED IN AS: "+userName);
 
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            out.println("Registration failed: " + e.getMessage());
+            toTerminal(out,"Registration failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDOUT;
 
         }

@@ -18,13 +18,20 @@ public class InteractiveUI {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         Scanner scanner = new Scanner(System.in);
 
+        out.print(SET_TEXT_BOLD);
+        out.print(SET_TEXT_COLOR_WHITE);
+
+        out.println("*******************************************************************************************************************************");
+        out.println(BLACK_QUEEN + "                                                    Welcome To Chess                                                    " + BLACK_QUEEN);
+        out.println("*******************************************************************************************************************************\n\n");
+
+
         while(true) {
 
             while (userStatus == UserStatus.LOGGEDOUT) {
                 out.print(SET_BG_COLOR_BLUE);
                 out.print(SET_TEXT_COLOR_BLACK);
-                out.print("Enter a command (help, quit, login, register): ");
-                out.println();
+                toTerminal(out,"Enter a command (help, quit, login, register): ");
                 String input = scanner.nextLine().toLowerCase();
                 PreLoginUI preLoginUI = new PreLoginUI(server, input, userStatus, out);
                 userStatus = preLoginUI.run();
@@ -33,16 +40,12 @@ public class InteractiveUI {
             while (userStatus == UserStatus.LOGGEDIN) {
                 out.print(SET_BG_COLOR_BLUE);
                 out.print(SET_TEXT_COLOR_BLACK);
-                out.print("Enter a command (help, logout, create game, list games, play game, observe game): ");
-                out.println();
+                toTerminal(out,"Enter a command (help, logout, create game, list games, play game, observe game): ");
+
                 String input = scanner.nextLine().toLowerCase();
                 PostLoginUI postLoginUI = new PostLoginUI(server, input, userStatus, out);
                 userStatus = postLoginUI.run();
             }
         }
-    }
-    private static void setBlack(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
     }
 }

@@ -56,7 +56,7 @@ public class PostLoginUI {
                 case "observe game": userStatus = observeGame();
                     break;
                 default:
-                    out.println("Unknown Request. Type \"help\" for a list of available commands.");
+                    toTerminal(out,"Unknown Request. Type \"help\" for a list of available commands.");
                     break;
             }
         return userStatus;
@@ -66,27 +66,27 @@ public class PostLoginUI {
 
     private void help(){
         setHelpText(out);
-        out.print("\u2003" + "--help--" + "\u2003");
+        toTerminal(out,"\u2003" + "--help--" + "\u2003");
         out.println();
 
         setHelpText(out);
-        out.print("Type \"logout\" to log out of the program");
+        toTerminal(out,"Type \"logout\" to log out of the program");
         out.println();
 
         setHelpText(out);
-        out.print("Type \"create game\" to create a new game");
+        toTerminal(out,"Type \"create game\" to create a new game");
         out.println();
 
         setHelpText(out);
-        out.print("Type \"list games\" to list all the current games on the server");
+        toTerminal(out,"Type \"list games\" to list all the current games on the server");
         out.println();
 
         setHelpText(out);
-        out.print("Type \"play game\" to play an existing game");
+        toTerminal(out,"Type \"play game\" to play an existing game");
         out.println();
 
         setHelpText(out);
-        out.print("Type \"observe game\" to observe an existing game");
+        toTerminal(out,"Type \"observe game\" to observe an existing game");
         out.println();
     }
 
@@ -102,7 +102,7 @@ public class PostLoginUI {
             InteractiveUI.currentToken = null;
             return userStatus=UserStatus.LOGGEDOUT;
         } catch (Exception e) {
-            out.println("Logout failed: " + e.getMessage());
+            toTerminal(out,"Logout failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
         }
     }
@@ -111,7 +111,7 @@ public class PostLoginUI {
 
 
         setHelpText(out);
-        out.println("Please enter a name for your game -->");
+        toTerminal(out,"Please enter a name for your game -->");
         Scanner in = new Scanner(System.in);
         String gameName = in.nextLine();
 
@@ -128,12 +128,12 @@ public class PostLoginUI {
                 count++;
             }
 
-            out.println("Congratulations! You have successfully Created a game (GameName: "+gameName +", GameID: " +thisGameID+"), happy dueling!");
+            toTerminal(out,"Congratulations! You have successfully Created a game (GameName: "+gameName +", GameID: " +thisGameID+"), happy dueling!");
 
 
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            out.println("Game creation failed: " + e.getMessage());
+            toTerminal(out,"Game creation failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
 
         }
@@ -152,15 +152,15 @@ public class PostLoginUI {
                 orderedMapOfGames.put(count, game);
                 count++;
             }
-            orderedMapOfGames.forEach((id, gameData) -> out.println(
+            orderedMapOfGames.forEach((id, gameData) -> toTerminal(out,
                             "Game ID:"+id +
                             ", Game Name: "+ gameData.gameName() +
-                            ", White Player: "+ (gameData.whiteUsername() != null ? gameData.whiteUsername() : "{ AVAILABLE }")+
-                            ", Black Player: "+ (gameData.blackUsername() != null ? gameData.blackUsername() : "{ AVAILABLE }")+ "\n"
+                            ", White Player: "+ (gameData.whiteUsername() != null ? gameData.whiteUsername() :SET_TEXT_COLOR_GREEN+ "{ AVAILABLE }" +SET_TEXT_COLOR_WHITE)+
+                            ", Black Player: "+ (gameData.blackUsername() != null ? gameData.blackUsername() : SET_TEXT_COLOR_GREEN+ "{ AVAILABLE }" +SET_TEXT_COLOR_WHITE)
                     ));
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            out.println("Game Listing failed: " + e.getMessage());
+            toTerminal(out,"Game Listing failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
 
         }
@@ -169,7 +169,7 @@ public class PostLoginUI {
     private UserStatus playGame(){
         setHelpText(out);
 
-        out.println("Please enter the ID number of the game you would like to join -->");
+        toTerminal(out,"Please enter the ID number of the game you would like to join -->");
         Scanner in = new Scanner(System.in);
         String gameID = in.nextLine();
         GameData gameToBeJoined = orderedMapOfGames.get(Integer.parseInt(gameID));
@@ -181,7 +181,7 @@ public class PostLoginUI {
 
 
 
-        out.println("Perfect, now what team would you like to join? White = \""+whitePlayer+"\" Black = \""+blackplayer+ "\"-->");
+        toTerminal(out,"Perfect, now what team would you like to join? White = \""+whitePlayer+"\" Black = \""+blackplayer+ "\"-->");
         String team = in.nextLine();
 
         String teamCAPS = team.toUpperCase();
@@ -189,7 +189,7 @@ public class PostLoginUI {
 
         try{
             server.joinGame(joinGame, InteractiveUI.currentToken);
-            out.println("Congratulations! You sucessfuly Joined the game "+gameID+". Good Luck!");
+            toTerminal(out,"Congratulations! You sucessfuly Joined the game "+gameID+". Good Luck!");
             if(teamCAPS.equals("BLACK")){
                 DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard());
             }
@@ -199,7 +199,7 @@ public class PostLoginUI {
             }
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
-            out.println("Game join failed: " + e.getMessage());
+            toTerminal(out,"Game join failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
 
         }
