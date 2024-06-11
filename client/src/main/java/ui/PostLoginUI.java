@@ -5,12 +5,15 @@ import request.CreateGameReq;
 import request.JoinGameReq;
 import response.CreateGameResp;
 import response.ListGamesResp;
+import uiutils.DrawChess;
+import uiutils.UserStatus;
+import web.ServerFacade;
 
 import java.io.PrintStream;
 import java.util.*;
 
-import static ui.EscapeSequences.*;
-import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
+import static uiutils.EscapeSequences.*;
+import static uiutils.EscapeSequences.SET_TEXT_COLOR_WHITE;
 import static ui.PreLoginUI.setHelpText;
 
 public class PostLoginUI {
@@ -100,6 +103,7 @@ public class PostLoginUI {
         try{
             server.logOut(InteractiveUI.currentToken);
             InteractiveUI.currentToken = null;
+            userStatus.setGameData(null);
             return userStatus=UserStatus.LOGGEDOUT;
         } catch (Exception e) {
             toTerminal(out,"Logout failed: " + e.getMessage());
@@ -170,34 +174,38 @@ public class PostLoginUI {
         setHelpText(out);
 
         toTerminal(out,"Please enter the ID number of the game you would like to join -->");
-        Scanner in = new Scanner(System.in);
-        String gameID = in.nextLine();
-        GameData gameToBeJoined = orderedMapOfGames.get(Integer.parseInt(gameID));
-        String blackplayer = gameToBeJoined.blackUsername();
-        String whitePlayer = gameToBeJoined.whiteUsername();
+        try {
+            Scanner in = new Scanner(System.in);
+            String gameID = in.nextLine().toString();
+            GameData gameToBeJoined = orderedMapOfGames.get(Integer.parseInt(gameID));
+            String blackplayer = gameToBeJoined.blackUsername();
+            String whitePlayer = gameToBeJoined.whiteUsername();
 
-        if(blackplayer == null ){blackplayer = "{ AVAILABLE }";}
-        if(whitePlayer == null ){whitePlayer = "{ AVAILABLE }";}
-
-
-
-        toTerminal(out,"Perfect, now what team would you like to join? White = \""+whitePlayer+"\" Black = \""+blackplayer+ "\"-->");
-        String team = in.nextLine();
-
-        String teamCAPS = team.toUpperCase();
-        JoinGameReq joinGame = new JoinGameReq(teamCAPS,gameToBeJoined.gameID());
-
-        try{
-            server.joinGame(joinGame, InteractiveUI.currentToken);
-            toTerminal(out,"Congratulations! You sucessfuly Joined the game "+gameID+". Good Luck!");
-            if(teamCAPS.equals("BLACK")){
-                DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard());
+            if (blackplayer == null) {
+                blackplayer = "{ AVAILABLE }";
             }
-            else{
+            if (whitePlayer == null) {
+                whitePlayer = "{ AVAILABLE }";
+            }
+
+
+            toTerminal(out, "Perfect, now what team would you like to join? White = \"" + whitePlayer + "\" Black = \"" + blackplayer + "\"-->");
+            String team = in.nextLine();
+
+            String teamCAPS = team.toUpperCase();
+            JoinGameReq joinGame = new JoinGameReq(teamCAPS, gameToBeJoined.gameID());
+
+
+            server.joinGame(joinGame, InteractiveUI.currentToken);
+            toTerminal(out, "Congratulations! You sucessfuly Joined the game " + gameID + ". Good Luck!");
+            if (teamCAPS.equals("BLACK")) {
+                DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard());
+            } else {
                 DrawChess.drawBoardWhite(out, gameToBeJoined.game().getBoard());
 
             }
-            return userStatus=UserStatus.LOGGEDIN;
+            userStatus.setGameData(gameToBeJoined);
+            return userStatus = UserStatus.LOGGEDIN;
         } catch (Exception e) {
             toTerminal(out,"Game join failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
@@ -208,15 +216,15 @@ public class PostLoginUI {
     private UserStatus observeGame	(){
         setHelpText(out);
         out.println("Please enter the ID number of the game you would like to Observe -->");
-        Scanner in = new Scanner(System.in);
-        String gameID = in.nextLine();
+        try {
+            Scanner in = new Scanner(System.in);
+            String gameID = in.nextLine();
 
 
-        try{
             GameData gametoWatch = orderedMapOfGames.get(Integer.parseInt(gameID));
             DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard());
             DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard());
-            return userStatus=UserStatus.LOGGEDIN;
+            return userStatus = UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;

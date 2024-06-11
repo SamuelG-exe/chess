@@ -10,7 +10,7 @@ import response.ListGamesResp;
 import response.LoginResp;
 import response.RegisterResp;
 import server.Server;
-import ui.ServerFacade;
+import web.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;
 

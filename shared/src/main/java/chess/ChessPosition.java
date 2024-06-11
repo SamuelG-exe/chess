@@ -11,6 +11,7 @@ import static java.lang.Math.abs;
  * signature of the existing methods.
  */
 public class ChessPosition {
+    String columns = "ABCDEFG";
 
     private int row;
     private int col;
@@ -32,6 +33,21 @@ public class ChessPosition {
     public ChessPosition(int row, int col) {
         this.row = row;
         this.col = col;
+    }
+
+    public ChessPosition(int row, char col) {
+        this.row = row;
+        this.col = letterToNumber(col);
+    }
+
+    private int letterToNumber(char col) {
+        col = Character.toUpperCase(col);
+        int intOfCol;
+        if (columns.contains(String.valueOf(col))) {
+            return intOfCol = columns.indexOf(col);
+        } else {
+            throw new IllegalArgumentException("Column must be between 'A' and 'H'");
+        }
     }
 
     /**

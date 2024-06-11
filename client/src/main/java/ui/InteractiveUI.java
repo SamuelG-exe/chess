@@ -1,10 +1,13 @@
 package ui;
 
+import uiutils.UserStatus;
+import web.ServerFacade;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import static ui.EscapeSequences.*;
+import static uiutils.EscapeSequences.*;
 
 
 public class InteractiveUI {
@@ -32,12 +35,22 @@ public class InteractiveUI {
                 out.print(SET_BG_COLOR_BLUE);
                 out.print(SET_TEXT_COLOR_BLACK);
                 toTerminal(out,"Enter a command (help, quit, login, register): ");
-                String input = scanner.nextLine().toLowerCase();
+                String input = scanner.nextLine().toString().toLowerCase();
                 PreLoginUI preLoginUI = new PreLoginUI(server, input, userStatus, out);
                 userStatus = preLoginUI.run();
             }
 
             while (userStatus == UserStatus.LOGGEDIN) {
+                out.print(SET_BG_COLOR_BLUE);
+                out.print(SET_TEXT_COLOR_BLACK);
+                toTerminal(out,"Enter a command (help, logout, create game, list games, play game, observe game): ");
+
+                String input = scanner.nextLine().toLowerCase();
+                PostLoginUI postLoginUI = new PostLoginUI(server, input, userStatus, out);
+                userStatus = postLoginUI.run();
+            }
+
+            while (userStatus == UserStatus.INGAME_WHITE || (userStatus == UserStatus.INGAME_BLACK)) {
                 out.print(SET_BG_COLOR_BLUE);
                 out.print(SET_TEXT_COLOR_BLACK);
                 toTerminal(out,"Enter a command (help, logout, create game, list games, play game, observe game): ");

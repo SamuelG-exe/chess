@@ -4,13 +4,14 @@ import request.LoginReq;
 import request.RegisterReq;
 import response.LoginResp;
 import response.RegisterResp;
+import uiutils.UserStatus;
+import web.ServerFacade;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 
 
-import static ui.EscapeSequences.*;
-import static ui.EscapeSequences.SET_TEXT_COLOR_BLACK;
+import static uiutils.EscapeSequences.*;
 
 public class PreLoginUI {
     private ServerFacade server;
