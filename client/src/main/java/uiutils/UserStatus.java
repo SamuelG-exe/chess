@@ -2,20 +2,13 @@ package uiutils;
 
 import chess.ChessGame;
 import model.GameData;
+import ui.InGameUI;
 
 public enum UserStatus {
     LOGGEDOUT,
     LOGGEDIN,
     INGAME_WHITE(),
-    INGAME_BLACK();
+    INGAME_BLACK(),
+    INGAME_GAMEOVER;
 
-    private GameData gameData;
-
-    public GameData getGameData() {
-        return gameData;
-    }
-
-    public void setGameData(GameData gameData) {
-        this.gameData = gameData;
-    }
 }

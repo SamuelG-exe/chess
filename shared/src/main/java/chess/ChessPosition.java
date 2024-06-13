@@ -42,9 +42,8 @@ public class ChessPosition {
 
     private int letterToNumber(char col) {
         col = Character.toUpperCase(col);
-        int intOfCol;
         if (columns.contains(String.valueOf(col))) {
-            return intOfCol = columns.indexOf(col);
+            return columns.indexOf(col) + 1;
         } else {
             throw new IllegalArgumentException("Column must be between 'A' and 'H'");
         }

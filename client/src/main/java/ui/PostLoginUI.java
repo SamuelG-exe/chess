@@ -11,6 +11,7 @@ import web.ServerFacade;
 
 import java.io.PrintStream;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static uiutils.EscapeSequences.*;
 import static uiutils.EscapeSequences.SET_TEXT_COLOR_WHITE;
@@ -21,16 +22,17 @@ public class PostLoginUI {
     private String input;
     private UserStatus userStatus;
     private final PrintStream out;
-
     private int count;
+    private AtomicReference<GameData> gameData;
     Map<Integer,GameData> orderedMapOfGames = new HashMap<>();
 
-    PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out) {
+    PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out, AtomicReference<GameData> gameData) {
         this.server = server;
         this.input = input;
         this.userStatus = userStatus;
         this.out = out;
         this.count = 1;
+        this.gameData=gameData;
 
         try {
             ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
@@ -103,7 +105,7 @@ public class PostLoginUI {
         try{
             server.logOut(InteractiveUI.currentToken);
             InteractiveUI.currentToken = null;
-            userStatus.setGameData(null);
+            gameData.set(null);
             return userStatus=UserStatus.LOGGEDOUT;
         } catch (Exception e) {
             toTerminal(out,"Logout failed: " + e.getMessage());
@@ -198,14 +200,15 @@ public class PostLoginUI {
 
             server.joinGame(joinGame, InteractiveUI.currentToken);
             toTerminal(out, "Congratulations! You sucessfuly Joined the game " + gameID + ". Good Luck!");
+            gameData.set(gameToBeJoined);
             if (teamCAPS.equals("BLACK")) {
-                DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard());
+                DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard(), null);
+                return userStatus = UserStatus.INGAME_BLACK;
             } else {
-                DrawChess.drawBoardWhite(out, gameToBeJoined.game().getBoard());
-
+                DrawChess.drawBoardWhite(out, gameToBeJoined.game().getBoard(), null);
+                return userStatus = UserStatus.INGAME_WHITE;
             }
-            userStatus.setGameData(gameToBeJoined);
-            return userStatus = UserStatus.LOGGEDIN;
+
         } catch (Exception e) {
             toTerminal(out,"Game join failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;
@@ -222,8 +225,8 @@ public class PostLoginUI {
 
 
             GameData gametoWatch = orderedMapOfGames.get(Integer.parseInt(gameID));
-            DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard());
-            DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard());
+            DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard(), null);
+            DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard(), null);
             return userStatus = UserStatus.LOGGEDIN;
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());

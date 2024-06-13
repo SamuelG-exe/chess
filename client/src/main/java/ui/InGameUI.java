@@ -2,17 +2,18 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
-import request.JoinGameReq;
-import response.ListGamesResp;
 import uiutils.DrawChess;
 import uiutils.UserStatus;
 import web.ServerFacade;
 
 import java.io.PrintStream;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static chess.ChessPiece.PieceType.*;
 import static uiutils.EscapeSequences.*;
 import static ui.PreLoginUI.setHelpText;
 import static uiutils.UserStatus.*;
@@ -22,44 +23,33 @@ public class InGameUI {
     private String input;
     private UserStatus userStatus;
     private final PrintStream out;
-    private ChessGame game;
+    private AtomicReference<GameData> game;
     private int count;
-    private boolean gameOver;
 
-    InGameUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out) {
+    InGameUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out, AtomicReference<GameData> gameData) {
         this.server = server;
         this.input = input;
         this.userStatus = userStatus;
         this.out = out;
         this.count = 1;
-        this.game = userStatus.getGameData().game();
-        this.gameOver = true;
+        this.game = gameData;
 
-        try {
-            ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
-            List<GameData> listOfGames = listOfGamesResp.games();
-            for (GameData game : listOfGames) {
-                orderedMapOfGames.put(count, game);
-                count++;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
     }
 
     public UserStatus run() {
         switch (input) {
             case "help": help();
                 break;
-            case "redraw chess board": redrawChessBoard();
+            case "redraw chess board", "redraw": userStatus = redrawChessBoard();
                 break;
             case "leave": userStatus = leave();
                 break;
-            case "makeMove": if(!gameOver){userStatus = makeMove();}else{toTerminal(out,"Game is over, you may not longer make a move. Type \"leave\" to leave this game and go join another! ");}
+            case "makeMove", "make move", "move": if(userStatus!= INGAME_GAMEOVER){userStatus = makeMove();}else{toTerminal(out,"Game is over, you may not longer make a move. Type \"leave\" to leave this game and go join another! ");}
                 break;
             case "resign": userStatus = resign();
                 break;
-            case "observe game": userStatus = observeGame();
+            case "highlight legal moves", "highlight": userStatus = highlightLegalMoves();
                 break;
             default:
                 toTerminal(out,"Unknown Request. Type \"help\" for a list of available commands.");
@@ -76,23 +66,23 @@ public class InGameUI {
         out.println();
 
         setHelpText(out);
-        toTerminal(out,"Type \"logout\" to log out of the program");
+        toTerminal(out,"Type \"Redraw Chess Board\" to refresh your screen and redraw the board");
         out.println();
 
         setHelpText(out);
-        toTerminal(out,"Type \"create game\" to create a new game");
+        toTerminal(out,"Type \"Leave\" to leave the game you are currently in");
         out.println();
 
         setHelpText(out);
-        toTerminal(out,"Type \"list games\" to list all the current games on the server");
+        toTerminal(out,"Type \"Make Move\" to perform a Chess move");
         out.println();
 
         setHelpText(out);
-        toTerminal(out,"Type \"play game\" to play an existing game");
+        toTerminal(out,"Type \"Resign\" to surrender the game");
         out.println();
 
         setHelpText(out);
-        toTerminal(out,"Type \"observe game\" to observe an existing game");
+        toTerminal(out,"Type \"Highlight Legal Moves\" to Highlight all possible Moves");
         out.println();
     }
 
@@ -105,10 +95,10 @@ public class InGameUI {
 
         try{
             if(userStatus == INGAME_WHITE){
-                DrawChess.drawBoardWhite(out, game.getBoard());
+                DrawChess.drawBoardWhite(out, game.get().game().getBoard(),null);
             }
             else{
-                DrawChess.drawBoardBlack(out, game.getBoard());
+                DrawChess.drawBoardBlack(out, game.get().game().getBoard(), null);
             }
         } catch (Exception e) {
             toTerminal(out,"Redraw: " + e.getMessage());
@@ -131,6 +121,7 @@ public class InGameUI {
     }
 
     private UserStatus makeMove(){
+        ChessGame.TeamColor team;
         Scanner in = new Scanner(System.in);
 
         setHelpText(out);
@@ -139,25 +130,51 @@ public class InGameUI {
         toTerminal(out,"Please enter move you would like to make -->");
 
         try {
+            ChessPiece promtionPiece;
+            if(userStatus == INGAME_WHITE){
+            promtionPiece = new ChessPiece(ChessGame.TeamColor.WHITE, null);
+            team = ChessGame.TeamColor.WHITE;
+            }
+            else{
+                promtionPiece = new ChessPiece(ChessGame.TeamColor.BLACK, null);
+                team= ChessGame.TeamColor.BLACK;
+            }
+
+
             //get the start pos
             toTerminal(out, "Starting Position -->");
-            ChessPosition start =getChessPosFromUserInput(in);
+            ChessPosition start = getChessPosFromUserInput(in);
+            if(game.get().game().getBoard().getPiece(start).getTeamColor() != team){
+                throw new Exception("You can only move pieces on your team");
+            }
 
             //get the End pos
             toTerminal(out, "End Position -->");
             ChessPosition end = getChessPosFromUserInput(in);
 
+            if(game.get().game().getBoard().getPiece(start).getPieceType()==PAWN){
+                promtionPiece = getPawnPromotionFromUser(out, promtionPiece, end);
+            }
+            else {
+                if(userStatus == INGAME_WHITE){
+                    promtionPiece = new ChessPiece(ChessGame.TeamColor.WHITE, null);
+                }
+                else{
+                    promtionPiece = new ChessPiece(ChessGame.TeamColor.BLACK, null);
+                }
+            }
 
-            ChessMove attemptedMove = new ChessMove(start, end, null);
-            game.makeMove(attemptedMove);
+
+            ChessMove attemptedMove = new ChessMove(start, end, promtionPiece.getPieceType());
+            game.get().game().makeMove(attemptedMove);
 
             //send out updated chess data
 
             if(userStatus == INGAME_WHITE){
-                DrawChess.drawBoardWhite(out, game.getBoard());
+                DrawChess.drawBoardWhite(out, game.get().game().getBoard(), null);
             }
             else{
-                DrawChess.drawBoardBlack(out, game.getBoard());
+                DrawChess.drawBoardBlack(out, game.get().game().getBoard(), null);
             }
 
             return userStatus;
@@ -168,13 +185,14 @@ public class InGameUI {
         }
     }
 
-    private UserStatus Resign(){
+    private UserStatus resign(){
         setHelpText(out);
-        gameOver = true;
+
 
         try{
             //do websocket stuff
-            return userStatus;
+            toTerminal(out,"You have Resigned. Game Over.");
+            return INGAME_GAMEOVER;
         } catch (Exception e) {
             toTerminal(out,"Game join failed: " + e.getMessage());
             return userStatus;
@@ -182,33 +200,81 @@ public class InGameUI {
         }
     }
 
-    private UserStatus observeGame	(){
+    private UserStatus highlightLegalMoves	(){
         setHelpText(out);
-        out.println("Please enter the ID number of the game you would like to Observe -->");
-        Scanner in = new Scanner(System.in);
-        String gameID = in.nextLine();
-
 
         try{
-            GameData gametoWatch = orderedMapOfGames.get(Integer.parseInt(gameID));
-            DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard());
-            DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard());
-            return userStatus=UserStatus.LOGGEDIN;
+            toTerminal(out, "Please enter the location of the piece you want highlighted -->");
+            Scanner in = new Scanner(System.in);
+            ChessPosition highlightedPiece = getChessPosFromUserInput(in);
+            Collection<ChessMove> movesAvalible = game.get().game().validMoves(highlightedPiece);
+            if(userStatus == INGAME_WHITE) {
+                DrawChess.drawBoardWhite(out, game.get().game().getBoard(), movesAvalible);
+            }
+            else{
+                DrawChess.drawBoardBlack(out, game.get().game().getBoard(), movesAvalible);
+            }
+
+            return userStatus;
         } catch (Exception e) {
-            out.println("Game Listing failed: " + e.getMessage());
-            return userStatus = UserStatus.LOGGEDIN;
+            out.println("Highlighting Failed: " + e.getMessage());
+            return userStatus;
         }
     }
 
     private ChessPosition getChessPosFromUserInput(Scanner in) throws Exception {
-        String endString = in.nextLine().toString();
-        if (endString.length() > 2) {
-            throw new Exception("Improper input, Please enter a starting location in the form \"A\"\"1\"");
+        String inputString = in.nextLine().trim().toUpperCase();
+        if (inputString.length() != 2) {
+            throw new Exception("Improper input, Please enter a location in the form \"A1\"");
         }
-        char columnEnd = endString.charAt(0);
-        int rowEnd = Integer.parseInt(endString.substring(1));
-        return new ChessPosition(rowEnd, columnEnd);
+
+        char columnChar = inputString.charAt(0);
+        int rowNumber;
+        try {
+            rowNumber = Integer.parseInt(inputString.substring(1));
+        } catch (NumberFormatException e) {
+            throw new Exception("Improper input, the row part must be a number.");
+        }
+
+        if (columnChar < 'A' || columnChar > 'H') {
+            throw new Exception("Column must be between 'A' and 'H'");
+        }
+
+        if (rowNumber < 1 || rowNumber > 8) {
+            throw new Exception("Row must be between 1 and 8");
+        }
+
+        return new ChessPosition(rowNumber, columnChar);
     }
 
+    private ChessPiece getPawnPromotionFromUser(PrintStream out, ChessPiece promtionPiece, ChessPosition end) {
+        ChessGame.TeamColor team;
+        if (userStatus == INGAME_WHITE) {
+            team = ChessGame.TeamColor.WHITE;
+        }
+        else {
+            team = ChessGame.TeamColor.BLACK;
+        }
+        Scanner in = new Scanner(System.in);
+
+        if (end.getRow() == 8 || end.getRow() == 1) {
+            toTerminal(out, "What would you like to promote your Pawn to? (Knight, Rook, Queen, Bishop)");
+            String promotion = in.nextLine().toUpperCase();
+            switch (promotion) {
+                case "KIGHT":
+                    promtionPiece = new ChessPiece(team, KNIGHT);
+                case "ROOK":
+                    promtionPiece = new ChessPiece(team, ROOK);
+                case "QUEEN":
+                    promtionPiece = new ChessPiece(team, QUEEN);
+                case "BISHOP":
+                    promtionPiece = new ChessPiece(team, BISHOP);
+                default:
+                    toTerminal(out,"Invalid Piece Type. Avalible types are: Knight, Rook, Queen, Bishop");
+                    getPawnPromotionFromUser(out, promtionPiece, end);
+            }
+        }
+        return promtionPiece;
+    }
 }
 

@@ -17,7 +17,6 @@ public class ChessBoard implements Cloneable{
     private ChessPiece[][] gameBoard;
     public ChessBoard() {
         gameBoard = new ChessPiece[8][8];
-        
     }
 
     /**

@@ -1,19 +1,17 @@
 package uiutils;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
-import uiutils.EscapeSequences;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static uiutils.EscapeSequences.*;
 
 
 public class DrawChess {
-    static ChessBoard gameBoardInternal = new ChessBoard();
+    static ChessBoard gameBoardInternal;
     private static final String EMPTY = EscapeSequences.EMPTY;
 
 
@@ -24,19 +22,18 @@ public class DrawChess {
         //clear
         out.print(ERASE_SCREEN);
 
-        drawBoardWhite(out, gameBoardInternal);
+        drawBoardWhite(out, gameBoardInternal, null);
 
         out.println();
 
-        drawBoardBlack(out, gameBoardInternal);
+        drawBoardBlack(out, gameBoardInternal, null);
 
 
     }
 
 
-    public static void drawBoardWhite(PrintStream out, ChessBoard gameBoard) {
+    public static void drawBoardWhite(PrintStream out, ChessBoard gameBoard, Collection<ChessMove> possibleMoves) {
         gameBoardInternal = gameBoard;
-        gameBoard.resetBoard();
         out.println();
         drawHeaderWhite(out);
         int count = 8;
@@ -45,8 +42,9 @@ public class DrawChess {
             out.print(SET_TEXT_COLOR_WHITE);
             out.print(SET_BG_COLOR_ALMOSTBLACK);
             out.print("\u2003" + Integer.toString(count) + "\u2003");
-            for (int j = 8; j >= 1; j--) {
-                drawBoardHelper(out, i, j);
+            for (int j = 1; j <= 8; j++) {
+                drawBoardHelper(out, i, j, possibleMoves);
+
             }
 
             out.print(SET_BG_COLOR_ALMOSTBLACK);
@@ -59,9 +57,8 @@ public class DrawChess {
         drawHeaderWhite(out);
     }
 
-    public static void drawBoardBlack(PrintStream out, ChessBoard gameBoard) {
+    public static void drawBoardBlack(PrintStream out, ChessBoard gameBoard, Collection<ChessMove> possibleMoves) {
         gameBoardInternal = gameBoard;
-        gameBoard.resetBoard();
         out.println();
         drawHeaderBlack(out);
         int count = 1;
@@ -70,8 +67,9 @@ public class DrawChess {
             out.print(SET_TEXT_COLOR_WHITE);
             out.print(SET_BG_COLOR_ALMOSTBLACK);
             out.print("\u2003" + Integer.toString(count) + "\u2003");
-            for (int j = 1; j <= 8; j++) {
-                drawBoardHelper(out, i, j);
+            for (int j = 8; j >= 1; j--) {
+                  drawBoardHelper(out, i, j, possibleMoves);
+
             }
 
             out.print(SET_BG_COLOR_ALMOSTBLACK);
@@ -84,34 +82,58 @@ public class DrawChess {
         drawHeaderBlack(out);
     }
 
-    private static void drawBoardHelper(PrintStream out, int i, int j) {
+    private static void drawBoardHelper(PrintStream out, int i, int j, Collection<ChessMove> possibleMoves) {
         ChessPosition cord = new ChessPosition(i, j);
+        ChessPosition start = null;
+
         ChessPiece thisPiece = gameBoardInternal.getPiece(cord);
         String stringOfPiece;
         ChessGame.TeamColor teamColor = null;
 
-        if(thisPiece == null){
+        if (thisPiece == null) {
             stringOfPiece = EMPTY;
-        }
-        else {
+        } else {
             teamColor = thisPiece.getTeamColor();
             stringOfPiece = switch (thisPiece.getPieceType()) {
                 case KING -> BLACK_KING;
                 case QUEEN -> BLACK_QUEEN;
-                case BISHOP ->  BLACK_BISHOP;
-                case KNIGHT ->  BLACK_KNIGHT;
-                case ROOK ->  BLACK_ROOK;
-                case PAWN ->  BLACK_PAWN;
+                case BISHOP -> BLACK_BISHOP;
+                case KNIGHT -> BLACK_KNIGHT;
+                case ROOK -> BLACK_ROOK;
+                case PAWN -> BLACK_PAWN;
             };
         }
-
-        if((i+j)%2==0){
-            printSquareWhite(out, stringOfPiece, teamColor);
+        if(possibleMoves != null) {
+            Collection<ChessPosition> endLocations = new ArrayList<>();
+            for (ChessMove move : possibleMoves) {
+                endLocations.add(move.getEndPosition());
+                start=move.getStartPosition();
+            }
+            if(cord.equals(start)){
+                printSquareYellow(out, stringOfPiece, teamColor);
+            }
+            else if (endLocations.contains(cord)) {
+                if ((i + j) % 2 == 1) {
+                    printSquareGreen(out, stringOfPiece, teamColor);
+                } else {
+                    printSquareDarkGreen(out, stringOfPiece, teamColor);
+                }
+            } else if ((i + j) % 2 == 1) {
+                printSquareWhite(out, stringOfPiece, teamColor);
+            } else {
+                printSquareBlack(out, stringOfPiece, teamColor);
+            }
         }
-        else{
-            printSquareBlack(out, stringOfPiece, teamColor);
+        else {
+            if ((i + j) % 2 == 1) {
+                printSquareWhite(out, stringOfPiece, teamColor);
+            } else {
+                printSquareBlack(out, stringOfPiece, teamColor);
+            }
+
         }
     }
+
 
 
     private static void drawHeaderWhite(PrintStream out) {
@@ -161,6 +183,21 @@ public class DrawChess {
         out.print(SET_BG_COLOR_DARK_BROWN);
         setPieceColor(out, piece, teamColor);
     }
+
+    private static void printSquareGreen(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
+        out.print(SET_BG_COLOR_GREEN);
+        setPieceColor(out, piece, teamColor);
+    }
+    private static void printSquareDarkGreen(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        setPieceColor(out, piece, teamColor);
+    }
+    private static void printSquareYellow(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
+        out.print(SET_BG_COLOR_YELLOW);
+        setPieceColor(out, piece, teamColor);
+    }
+
+
     private static void setPieceColor(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
         if(teamColor == ChessGame.TeamColor.WHITE){
             out.print(SET_TEXT_COLOR_WHITE);
@@ -170,8 +207,6 @@ public class DrawChess {
             out.print(SET_TEXT_COLOR_BLACK);
             out.print(piece);}
     }
-
-
     
     private static void setBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
