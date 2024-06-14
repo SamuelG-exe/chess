@@ -227,7 +227,7 @@ public class PostLoginUI {
             GameData gametoWatch = orderedMapOfGames.get(Integer.parseInt(gameID));
             DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard(), null);
             DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard(), null);
-            return userStatus = UserStatus.LOGGEDIN;
+            return userStatus = UserStatus.INGAME_GAMEOVER;
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());
             return userStatus = UserStatus.LOGGEDIN;

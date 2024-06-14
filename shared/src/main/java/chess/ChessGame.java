@@ -18,6 +18,8 @@ public class ChessGame {
     private TeamColor turn;
     private ChessBoard gameBoard;
 
+    private Boolean gameOver=false;
+
     ///black castle
     boolean blackLeftRookMoved = false;
     boolean blackRightRookMoved = false;
@@ -219,7 +221,10 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         List<ChessMove> teamMoves = new ArrayList<>(getAllValidMoves(gameBoard, teamColor));
-        return ChessBoard.inChecker(gameBoard, teamColor) && teamMoves.isEmpty();
+
+        boolean inCheckMate = ChessBoard.inChecker(gameBoard, teamColor) && teamMoves.isEmpty();
+        if(inCheckMate){gameOver=true;}
+        return inCheckMate;
     }
 
     /**
@@ -231,7 +236,10 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         List<ChessMove> teamMoves = new ArrayList<>(getAllValidMoves(gameBoard, teamColor));
-        return !(ChessBoard.inChecker(gameBoard, teamColor)) && teamMoves.isEmpty();
+        boolean inStalemate =  !(ChessBoard.inChecker(gameBoard, teamColor)) && teamMoves.isEmpty();
+        if(inStalemate){gameOver=true;}
+        return inStalemate;
+
     }
 
     /**

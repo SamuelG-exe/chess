@@ -1,5 +1,7 @@
 package websocket.commands;
 
+import model.GameData;
+
 import java.util.Objects;
 
 /**
@@ -10,8 +12,9 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken) {
+    public UserGameCommand(String authToken, GameData gameData1) {
         this.authToken = authToken;
+        this.gameData = gameData1;
     }
 
     public enum CommandType {
@@ -23,10 +26,16 @@ public class UserGameCommand {
 
     protected CommandType commandType;
 
+    private final GameData gameData;
+
     private final String authToken;
 
     public String getAuthString() {
         return authToken;
+    }
+
+    public GameData getGame() {
+        return gameData;
     }
 
     public CommandType getCommandType() {

@@ -45,9 +45,9 @@ public class InGameUI {
                 break;
             case "leave": userStatus = leave();
                 break;
-            case "makeMove", "make move", "move": if(userStatus!= INGAME_GAMEOVER){userStatus = makeMove();}else{toTerminal(out,"Game is over, you may not longer make a move. Type \"leave\" to leave this game and go join another! ");}
+            case "makeMove", "make move", "move": if(userStatus!= INGAME_GAMEOVER){userStatus = makeMove();}else{toTerminal(out,"You may not  make a move. Type \"leave\" to leave this game and go join another! ");}
                 break;
-            case "resign": userStatus = resign();
+            case "resign": if(userStatus!= INGAME_GAMEOVER){userStatus = resign();}else{toTerminal(out,"You may not resign. Type \"leave\" to leave this game and go join another! ");}
                 break;
             case "highlight legal moves", "highlight": userStatus = highlightLegalMoves();
                 break;
@@ -113,6 +113,7 @@ public class InGameUI {
         try{
             //update list og users connected to this game
             out.print(ERASE_SCREEN);
+
             return userStatus= LOGGEDIN;
         } catch (Exception e) {
             toTerminal(out,"Leave failed: " + e.getMessage());
