@@ -189,7 +189,7 @@ public class DrawChess {
         setPieceColor(out, piece, teamColor);
     }
     private static void printSquareDarkGreen(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
-        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_BG_COLOR_DARK_GREEN_BETTER);
         setPieceColor(out, piece, teamColor);
     }
     private static void printSquareYellow(PrintStream out, String piece, ChessGame.TeamColor teamColor) {
