@@ -209,6 +209,11 @@ public class ChessGame {
         this.gameOver=gameOverStatus;
     }
 
+    public Boolean getGameOver(){
+        return this.gameOver;
+    }
+
+
     /**
      * Determines if the given team is in check
      *
