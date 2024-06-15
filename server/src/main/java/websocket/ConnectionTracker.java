@@ -3,6 +3,7 @@ package websocket;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class ConnectionTracker {
@@ -16,5 +17,17 @@ public class ConnectionTracker {
 
     public void send(String msg) throws IOException {
         session.getRemote().sendString(msg);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ConnectionTracker that)) return false;
+        return Objects.equals(token, that.token) && Objects.equals(session, that.session);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token, session);
     }
 }

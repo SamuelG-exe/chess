@@ -203,6 +203,12 @@ public class ChessGame {
         }
     }
 
+    public boolean isGameover(){return gameOver;}
+
+    public void setGameOver(boolean gameOverStatus){
+        this.gameOver=gameOverStatus;
+    }
+
     /**
      * Determines if the given team is in check
      *

@@ -1,5 +1,7 @@
 package websocket.messages;
 
+import com.google.gson.Gson;
+
 import java.util.Objects;
 
 /**
@@ -17,12 +19,16 @@ public class ServerMessage {
         NOTIFICATION
     }
 
-    public ServerMessage(ServerMessageType type) {
+    public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
     }
 
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
+    }
+
+    public String toString() {
+        return new Gson().toJson(this);
     }
 
     @Override

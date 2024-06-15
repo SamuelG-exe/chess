@@ -9,13 +9,14 @@ import dataaccess.dao.sqldao.UserSQL;
 import handler.*;
 import spark.*;
 import dataaccess.dao.*;
-import websocket.websocketHandler;
+import websocket.WebsocketHandler;
 
 public class Server {
 
     private UserDAO users = new UserSQL();
     private AuthDAO authTokens = new AuthSQL();
     private GameDAO games = new GameSQL();
+
 
     public int run(int desiredPort) {
         try {
@@ -30,7 +31,9 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        Spark.webSocket("/ws", new WebsocketHandler(users, authTokens, games));
         // Register your endpoints and handle exceptions here.
+
         Spark.delete("/db", (request, response) -> new ClearHandler(users, authTokens, games).handle(request, response));
         Spark.post("/user", (request, response) -> new RegisterHandler(users, authTokens).handle(request, response));
         Spark.post("/session", (request, response) -> new LoginHandler(users, authTokens).handle(request, response));
@@ -38,7 +41,6 @@ public class Server {
         Spark.get("/game", (request, response) -> new ListGamesHandler(authTokens, games).handle(request, response));
         Spark.post("/game", (request, response) -> new CreateGameHandler(authTokens, games).handle(request, response));
         Spark.put("/game", (request, response) -> new JoinGameHandler(users, authTokens, games).handle(request, response));
-        Spark.webSocket(/"ws", new websocketHandler);
 
 
         Spark.awaitInitialization();

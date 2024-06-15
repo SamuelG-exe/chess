@@ -8,6 +8,8 @@ import model.GameData;
 import uiutils.DrawChess;
 import uiutils.UserStatus;
 import web.ServerFacade;
+import websocket.messages.ServerMessage;
+import websocket.messages.ServerMessageObserver;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -18,7 +20,7 @@ import static uiutils.EscapeSequences.*;
 import static ui.PreLoginUI.setHelpText;
 import static uiutils.UserStatus.*;
 
-public class InGameUI {
+public class InGameUI implements ServerMessageObserver {
     private ServerFacade server;
     private String input;
     private UserStatus userStatus;
@@ -276,6 +278,16 @@ public class InGameUI {
             }
         }
         return promtionPiece;
+    }
+
+
+    @Override
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+        }
     }
 }
 
