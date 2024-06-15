@@ -20,7 +20,8 @@ public class DrawChess {
 
 
         //clear
-        out.print(ERASE_SCREEN);
+        //out.print(ERASE_SCREEN);
+        out.println();
 
         drawBoardWhite(out, gameBoardInternal, null);
 
@@ -30,9 +31,18 @@ public class DrawChess {
 
 
     }
+    public static void drawBoth(PrintStream out, ChessBoard gameBoard, Collection<ChessMove> possibleMoves) {
+        out.println();
+        drawBoardWhite(out, gameBoard, possibleMoves);
+        out.println();
+        drawBoardBlack(out, gameBoard, possibleMoves);
+        out.println();
+    }
 
 
-    public static void drawBoardWhite(PrintStream out, ChessBoard gameBoard, Collection<ChessMove> possibleMoves) {
+
+
+        public static void drawBoardWhite(PrintStream out, ChessBoard gameBoard, Collection<ChessMove> possibleMoves) {
         gameBoardInternal = gameBoard;
         out.println();
         drawHeaderWhite(out);

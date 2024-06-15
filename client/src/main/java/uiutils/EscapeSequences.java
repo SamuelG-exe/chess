@@ -97,6 +97,11 @@ public class EscapeSequences {
 
     }
 
+    public static void toTerminalError(PrintStream out, String message) {
+        out.print(SET_BG_COLOR_RED);
+        toTerminal(out, message);
+    }
+
     private static void setBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);

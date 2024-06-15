@@ -233,6 +233,5 @@ public class PostLoginUI {
             return userStatus = UserStatus.LOGGEDIN;
         }
     }
-
 }
 

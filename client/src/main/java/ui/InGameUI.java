@@ -9,7 +9,7 @@ import uiutils.DrawChess;
 import uiutils.UserStatus;
 import web.ServerFacade;
 import websocket.messages.ServerMessage;
-import websocket.messages.ServerMessageObserver;
+import web.ServerMessageObserver;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -103,7 +103,7 @@ public class InGameUI implements ServerMessageObserver {
                 DrawChess.drawBoardBlack(out, game.get().game().getBoard(), null);
             }
         } catch (Exception e) {
-            toTerminal(out,"Redraw: " + e.getMessage());
+            toTerminal(out,"Redraw failed: " + e.getMessage());
             return userStatus;
         }
         return userStatus;
@@ -281,13 +281,5 @@ public class InGameUI implements ServerMessageObserver {
     }
 
 
-    @Override
-    public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
-        }
-    }
 }
 

@@ -1,5 +1,6 @@
 package websocket;
 
+import json.SerializeUtils;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
@@ -44,7 +45,8 @@ public class GameManager {
         for (ConnectionTracker user : users) {
             if (user.session.isOpen()) {
                 if (!user.token.equals(currentToken)) {
-                    user.send(notification.toString());
+                    ///turn into json
+                    user.send(SerializeUtils.toJson(notification));
                 }
             } else {
                 removeList.add(user);
@@ -58,4 +60,24 @@ public class GameManager {
             gameWithUsers.put(gameID, users);
         }
     }
+
+    public void broadcastAll(String gameID, ServerMessage notification) throws IOException {
+        var removeList = new ArrayList<ConnectionTracker>();
+        Set<ConnectionTracker> users = gameWithUsers.get(gameID);
+        for (ConnectionTracker user : users) {
+            if (user.session.isOpen()) {
+                    user.send(SerializeUtils.toJson(notification));
+                }
+            else {
+                removeList.add(user);
+            }
+        }
+        // Clean up any connections that were left open.
+        for (var oldConnection : removeList) {
+            users.remove(oldConnection);
+            gameWithUsers.put(gameID, users);
+        }
+    }
+
+
 }

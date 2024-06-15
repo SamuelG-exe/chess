@@ -15,20 +15,23 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
+import websocket.messages.ServerMessageError;
+import websocket.messages.ServerMessageLoadGme;
+import websocket.messages.ServerMessageNotification;
 
 import java.io.IOException;
 import java.util.Objects;
+
+import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 @WebSocket
 public class WebsocketHandler {
 
     private final GameManager gameManager = new GameManager();
-    private UserDAO usersDAO;
     private AuthDAO authTokensDAO;
     private GameDAO gameDAO;
 
     public WebsocketHandler(UserDAO users, AuthDAO authTokens, GameDAO games) {
-        this.usersDAO = users;
         this.authTokensDAO = authTokens;
         this.gameDAO = games;
     }
@@ -45,35 +48,50 @@ public class WebsocketHandler {
 
             switch (command.getCommandType()) {
                 case CONNECT -> connect(session, command);
-                case MAKE_MOVE -> makeMove(SerializeUtils.fromJson(jSONFromClient, MakeMoveCommand.class));
-                case LEAVE -> leaveGame(command);
-                case RESIGN -> resign(command);
+                case MAKE_MOVE -> makeMove(session, SerializeUtils.fromJson(jSONFromClient, MakeMoveCommand.class));
+                case LEAVE -> leaveGame(session, command);
+                case RESIGN -> resign(session, command);
             }
-        } catch (UnauthorizedException ex) {
-            // Serializes and sends the error message
-            sendMessage(session.getRemote(), new ErrorMessage("Error: unauthorized"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            sendMessage(session.getRemote(), new ErrorMessage("Error: " + ex.getMessage()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-
     }
+
+
     private void connect(Session session,UserGameCommand command) throws DataAccessException, IOException {
 
         String token = command.getAuthString();
         String gameID = command.getGameID();
 
+        GameData currntGame = gameDAO.getGame(gameID);
+        String whiteUsername = currntGame.whiteUsername();
+        String blackUsername = currntGame.blackUsername();
+
+
         AuthData currntUser= authTokensDAO.getAuth(token);
+        String userName = currntUser.username();
 
         gameManager.add(gameID, token, session);
-        var message = String.format("%s has joined the Game", currntUser.username());
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+
+        String message;
+
+        if(blackUsername != null && blackUsername.equals(userName)){
+            message = String.format("%s has joined the Game as Team Black", currntUser.username());
+        } else if (whiteUsername != null && whiteUsername.equals(userName)) {
+            message = String.format("%s has joined the Game as Team White", currntUser.username());
+
+        }else{
+            message = String.format("%s has joined the Game as an Observer", currntUser.username());
+        }
+        session.getRemote().sendString(SerializeUtils.toJson(new ServerMessageLoadGme(currntGame)));
+
+
+        var notification = new ServerMessageNotification(message);
         gameManager.broadcast(gameID, token, notification);
 
     }
 
-    private void leaveGame(UserGameCommand command) throws DataAccessException, IOException {
+    private void leaveGame(Session session, UserGameCommand command) throws DataAccessException, IOException {
         String token = command.getAuthString();
         String gameID = command.getGameID();
 
@@ -87,12 +105,12 @@ public class WebsocketHandler {
 
         gameManager.remove(gameID, token);
         var message = String.format("%s has left the Game", currntUser.username());
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new ServerMessageNotification(message);
         gameManager.broadcast(gameID, token, notification);
 
     }
 
-    private void makeMove(MakeMoveCommand command) throws Exception {
+    private void makeMove(Session session, MakeMoveCommand command) throws Exception {
         ChessMove move = command.getMove();
         String token = command.getAuthString();
         String gameID = command.getGameID();
@@ -101,15 +119,20 @@ public class WebsocketHandler {
         AuthData currntUser= authTokensDAO.getAuth(token);
         GameData currntGame = gameDAO.getGame(gameID);
 
-        okToMoveChecker(currntGame, currntUser, move);
+        try {
+            okToMoveChecker(currntGame, currntUser, move);
+        }catch (Exception e){
+            String message = SerializeUtils.toJson(new ServerMessageError(e.getMessage()));
+            session.getRemote().sendString("WebSocket response: " + message);
+        }
 
         var message = String.format("%s has made a Move", currntUser.username());
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new ServerMessageNotification(message);
         gameManager.broadcast(gameID, token, notification);
 
     }
 
-    private void resign(UserGameCommand command) throws DataAccessException, IOException {
+    private void resign(Session session, UserGameCommand command) throws DataAccessException, IOException {
         String token = command.getAuthString();
         String gameID = command.getGameID();
 
@@ -121,7 +144,7 @@ public class WebsocketHandler {
         gameDAO.updateGame(gameID, currntGame);
 
         var message = String.format("%s has resigned", currntUser.username());
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new ServerMessageNotification(message);
         gameManager.broadcast(gameID, token, notification);
 
     }
