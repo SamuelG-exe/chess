@@ -158,7 +158,7 @@ public class WebsocketHandler {
             var notification = new ServerMessageNotification(message);
             gameManager.broadcast(gameID, token, notification);
 
-            //postMoveUpdate(currntGame, gameID);
+            postMoveUpdate(currntGame, gameID);
         }
     }
 
@@ -226,6 +226,40 @@ public class WebsocketHandler {
         }
         if(game.game().getGameOver()){
             throw new Exception(" GameOver ");}
+    }
+    private void postMoveUpdate(GameData currntGame, String gameID) throws DataAccessException, IOException {
+        String message;
+        if(currntGame.game().isInCheckmate(ChessGame.TeamColor.WHITE)){
+            message = String.format("%s has Won the game! White is in Checkmate", currntGame.blackUsername());
+            var notificationOfGameState = new ServerMessageNotification(message);
+            currntGame.game().setGameOver(true);
+            gameDAO.updateGame(gameID, currntGame);
+            gameManager.broadcastAll(gameID, notificationOfGameState);
+        }
+        if(currntGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
+            message = String.format("%s has Won the game! Black is in Checkmate", currntGame.whiteUsername());
+            var notificationOfGameState = new ServerMessageNotification(message);
+            currntGame.game().setGameOver(true);
+            gameDAO.updateGame(gameID, currntGame);
+            gameManager.broadcastAll(gameID, notificationOfGameState);
+        }
+        if(currntGame.game().isInStalemate(ChessGame.TeamColor.WHITE)|| currntGame.game().isInStalemate(ChessGame.TeamColor.BLACK)){
+            message = ("Tie! Stalemate!");
+            var notificationOfGameState = new ServerMessageNotification(message);
+            currntGame.game().setGameOver(true);
+            gameDAO.updateGame(gameID, currntGame);
+            gameManager.broadcastAll(gameID, notificationOfGameState);
+        }
+        if(currntGame.game().isInCheck(ChessGame.TeamColor.WHITE)){
+            message = ("White is in check!");
+            var notificationOfGameState = new ServerMessageNotification(message);
+            gameManager.broadcastAll(gameID, notificationOfGameState);
+        }
+        if(currntGame.game().isInCheck(ChessGame.TeamColor.BLACK)){
+            message = ("Black is in check!");
+            var notificationOfGameState = new ServerMessageNotification(message);
+            gameManager.broadcastAll(gameID, notificationOfGameState);
+        }
     }
 
 
