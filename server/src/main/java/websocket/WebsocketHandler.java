@@ -44,8 +44,6 @@ public class WebsocketHandler {
         try {
             UserGameCommand command = SerializeUtils.fromJson(jSONFromClient, UserGameCommand.class);
 
-            // Throws a custom UnauthorizedException. Yours may work differently.
-
             switch (command.getCommandType()) {
                 case CONNECT -> connect(session, command);
                 case MAKE_MOVE -> makeMove(session, SerializeUtils.fromJson(jSONFromClient, MakeMoveCommand.class));

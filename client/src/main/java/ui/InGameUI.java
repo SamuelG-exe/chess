@@ -4,12 +4,16 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import com.google.gson.Gson;
 import model.GameData;
+import response.ListGamesResp;
 import uiutils.DrawChess;
 import uiutils.UserStatus;
 import web.ServerFacade;
-import websocket.messages.ServerMessage;
 import web.ServerMessageObserver;
+import web.WebSocketFacade;
+import websocket.commands.MakeMoveCommand;
+import websocket.commands.UserGameCommand;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -20,26 +24,27 @@ import static uiutils.EscapeSequences.*;
 import static ui.PreLoginUI.setHelpText;
 import static uiutils.UserStatus.*;
 
-public class InGameUI implements ServerMessageObserver {
+public class InGameUI  {
     private ServerFacade server;
     private String input;
     private UserStatus userStatus;
     private final PrintStream out;
     private AtomicReference<GameData> game;
-    private int count;
 
-    InGameUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out, AtomicReference<GameData> gameData) {
+    private WebSocketFacade websocket;
+
+
+
+    InGameUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out, AtomicReference<GameData> gameData,  WebSocketFacade websocket) {
         this.server = server;
         this.input = input;
         this.userStatus = userStatus;
         this.out = out;
-        this.count = 1;
         this.game = gameData;
-
-
+        this.websocket=websocket;
     }
 
-    public UserStatus run() {
+    public UserStatus run() throws Exception {
         switch (input) {
             case "help": help();
                 break;
@@ -88,10 +93,6 @@ public class InGameUI implements ServerMessageObserver {
         out.println();
     }
 
-    private void quit(){
-        System.exit(0);
-    }
-
     private UserStatus redrawChessBoard(){
         setHelpText(out);
 
@@ -113,8 +114,21 @@ public class InGameUI implements ServerMessageObserver {
         setHelpText(out);
 
         try{
-            //update list og users connected to this game
+            UserGameCommand command = new UserGameCommand(InteractiveUI.currentToken);
+            command.setCommandType(UserGameCommand.CommandType.LEAVE);
+            command.setGameID(game.get().gameID());
+            websocket.send(new Gson().toJson(command));
             out.print(ERASE_SCREEN);
+
+            ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
+            List<GameData> listOfGames = listOfGamesResp.games();
+            for (GameData gameInList : listOfGames){
+                if(Objects.equals(gameInList.gameID(), game.get().gameID())){
+                    game.set(gameInList);
+                }
+            }
+
+
 
             return userStatus= LOGGEDIN;
         } catch (Exception e) {
@@ -169,16 +183,20 @@ public class InGameUI implements ServerMessageObserver {
 
 
             ChessMove attemptedMove = new ChessMove(start, end, promtionPiece.getPieceType());
-            game.get().game().makeMove(attemptedMove);
-
-            //send out updated chess data
-
-            if(userStatus == INGAME_WHITE){
-                DrawChess.drawBoardWhite(out, game.get().game().getBoard(), null);
-            }
-            else{
-                DrawChess.drawBoardBlack(out, game.get().game().getBoard(), null);
-            }
+//            game.get().game().makeMove(attemptedMove);
+//
+//            //send out updated chess data
+//
+//            if(userStatus == INGAME_WHITE){
+//                DrawChess.drawBoardWhite(out, game.get().game().getBoard(), null);
+//            }
+//            else{
+//                DrawChess.drawBoardBlack(out, game.get().game().getBoard(), null);
+//            }
+            UserGameCommand command = new MakeMoveCommand(InteractiveUI.currentToken, game.get().gameID(),attemptedMove);
+            command.setCommandType(UserGameCommand.CommandType.MAKE_MOVE);
+            command.setGameID(game.get().gameID());
+            websocket.send(new Gson().toJson(command));
 
             return userStatus;
         } catch (Exception e) {
@@ -188,8 +206,13 @@ public class InGameUI implements ServerMessageObserver {
         }
     }
 
-    private UserStatus resign(){
+    private UserStatus resign() throws Exception {
         setHelpText(out);
+
+        UserGameCommand command = new UserGameCommand(InteractiveUI.currentToken);
+        command.setCommandType(UserGameCommand.CommandType.RESIGN);
+        command.setGameID(game.get().gameID());
+        websocket.send(new Gson().toJson(command));
 
 
         try{

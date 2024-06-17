@@ -31,7 +31,6 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
         notificationManager.notify(s);
     }
 
-
     public void send(String msg) throws Exception {
         this.session.getBasicRemote().sendText(msg);
     }

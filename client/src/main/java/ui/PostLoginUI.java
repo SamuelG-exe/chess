@@ -1,5 +1,6 @@
 package ui;
 
+import com.google.gson.Gson;
 import model.GameData;
 import request.CreateGameReq;
 import request.JoinGameReq;
@@ -8,6 +9,9 @@ import response.ListGamesResp;
 import uiutils.DrawChess;
 import uiutils.UserStatus;
 import web.ServerFacade;
+import web.ServerMessageObserver;
+import web.WebSocketFacade;
+import websocket.commands.UserGameCommand;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -24,17 +28,20 @@ public class PostLoginUI {
     private final PrintStream out;
     private int count;
     private AtomicReference<GameData> gameData;
+    private WebSocketFacade websocket;
     Map<Integer,GameData> orderedMapOfGames = new HashMap<>();
 
-    PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out, AtomicReference<GameData> gameData) {
+    PostLoginUI(ServerFacade server, String input, UserStatus userStatus, PrintStream out, AtomicReference<GameData> gameData, WebSocketFacade websocket) {
         this.server = server;
         this.input = input;
         this.userStatus = userStatus;
         this.out = out;
         this.count = 1;
         this.gameData=gameData;
+        this.websocket= websocket;
 
         try {
+            orderedMapOfGames.clear();
             ListGamesResp listOfGamesResp = server.listGames(InteractiveUI.currentToken);
             List<GameData> listOfGames = listOfGamesResp.games();
             for (GameData game : listOfGames) {
@@ -93,10 +100,6 @@ public class PostLoginUI {
         setHelpText(out);
         toTerminal(out,"Type \"observe game\" to observe an existing game");
         out.println();
-    }
-
-    private void quit(){
-        System.exit(0);
     }
 
     private UserStatus logOut(){
@@ -201,11 +204,17 @@ public class PostLoginUI {
             server.joinGame(joinGame, InteractiveUI.currentToken);
             toTerminal(out, "Congratulations! You sucessfuly Joined the game " + gameID + ". Good Luck!");
             gameData.set(gameToBeJoined);
+
+            UserGameCommand command = new UserGameCommand(InteractiveUI.currentToken);
+            command.setCommandType(UserGameCommand.CommandType.CONNECT);
+            command.setGameID(gameToBeJoined.gameID());
+            websocket.send(new Gson().toJson(command));
+
             if (teamCAPS.equals("BLACK")) {
-                DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard(), null);
+                //DrawChess.drawBoardBlack(out, gameToBeJoined.game().getBoard(), null);
                 return userStatus = UserStatus.INGAME_BLACK;
             } else {
-                DrawChess.drawBoardWhite(out, gameToBeJoined.game().getBoard(), null);
+                //DrawChess.drawBoardWhite(out, gameToBeJoined.game().getBoard(), null);
                 return userStatus = UserStatus.INGAME_WHITE;
             }
 
@@ -225,8 +234,12 @@ public class PostLoginUI {
 
 
             GameData gametoWatch = orderedMapOfGames.get(Integer.parseInt(gameID));
-            DrawChess.drawBoardBlack(out, gametoWatch.game().getBoard(), null);
-            DrawChess.drawBoardWhite(out, gametoWatch.game().getBoard(), null);
+
+            UserGameCommand command = new UserGameCommand(InteractiveUI.currentToken);
+            command.setCommandType(UserGameCommand.CommandType.CONNECT);
+            websocket.send(new Gson().toJson(command));
+
+
             return userStatus = UserStatus.INGAME_GAMEOVER;
         } catch (Exception e) {
             out.println("Game Listing failed: " + e.getMessage());
