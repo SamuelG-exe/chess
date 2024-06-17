@@ -137,7 +137,7 @@ public class WebsocketHandler {
         String userName = currntUser.username();
 
         if (!(blackUsername != null && blackUsername.equals(userName) || (whiteUsername != null && whiteUsername.equals(userName)))) {
-            message = SerializeUtils.toJson(new ServerMessageError("Youre an oberver and cannont move"));
+            message = SerializeUtils.toJson(new ServerMessageError("You're an observer and cannot move"));
             session.getRemote().sendString(message);
         } else {
 
@@ -158,7 +158,7 @@ public class WebsocketHandler {
             var notification = new ServerMessageNotification(message);
             gameManager.broadcast(gameID, token, notification);
 
-            postMoveUpdate(currntGame, gameID);
+            //postMoveUpdate(currntGame, gameID);
         }
     }
 

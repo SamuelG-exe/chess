@@ -203,7 +203,6 @@ public class ChessGame {
         }
     }
 
-    public boolean isGameover(){return gameOver;}
 
     public void setGameOver(boolean gameOverStatus){
         this.gameOver=gameOverStatus;
