@@ -6,7 +6,6 @@ import uiutils.DrawChess;
 import uiutils.UserStatus;
 import web.ServerFacade;
 import web.WebSocketFacade;
-import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 import web.ServerMessageObserver;
 import websocket.messages.ServerMessageError;
@@ -19,7 +18,6 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static uiutils.EscapeSequences.*;
-import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 
 public class InteractiveUI {
@@ -27,7 +25,7 @@ public class InteractiveUI {
     public static UserStatus userStatus;
     static AtomicReference<GameData> gameData = new AtomicReference<>();
 
-    private static final ServerMessageObserver notificationManager = new ServerMessageObserver() {
+    private static final ServerMessageObserver NOTIFICATIONMANAGER = new ServerMessageObserver() {
         @Override
         public void notify(String message) {
             ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
@@ -66,7 +64,7 @@ public class InteractiveUI {
 
     static {
         try {
-            webSocketFacade = new WebSocketFacade("localhost:8080", notificationManager);
+            webSocketFacade = new WebSocketFacade("localhost:8080", NOTIFICATIONMANAGER);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

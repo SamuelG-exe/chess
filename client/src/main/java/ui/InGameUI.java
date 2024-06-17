@@ -52,7 +52,7 @@ public class InGameUI  {
                 break;
             case "leave": userStatus = leave();
                 break;
-            case "makeMove", "make move", "move": if(userStatus!= INGAME_GAMEOVER){userStatus = makeMove();}else{toTerminal(out,"You may not  make a move. Type \"leave\" to leave this game and go join another! ");}
+            case "makeMove", "make move", "move": if(userStatus!= INGAME_GAMEOVER || game.get().game().getGameOver()){userStatus = makeMove();}else{toTerminal(out,"You may not  make a move. Type \"leave\" to leave this game and go join another! ");}
                 break;
             case "resign": if(userStatus!= INGAME_GAMEOVER){userStatus = resign();}else{toTerminal(out,"You may not resign. Type \"leave\" to leave this game and go join another! ");}
                 break;
@@ -183,16 +183,6 @@ public class InGameUI  {
 
 
             ChessMove attemptedMove = new ChessMove(start, end, promtionPiece.getPieceType());
-//            game.get().game().makeMove(attemptedMove);
-//
-//            //send out updated chess data
-//
-//            if(userStatus == INGAME_WHITE){
-//                DrawChess.drawBoardWhite(out, game.get().game().getBoard(), null);
-//            }
-//            else{
-//                DrawChess.drawBoardBlack(out, game.get().game().getBoard(), null);
-//            }
             UserGameCommand command = new MakeMoveCommand(InteractiveUI.currentToken, game.get().gameID(),attemptedMove);
             command.setCommandType(UserGameCommand.CommandType.MAKE_MOVE);
             command.setGameID(game.get().gameID());
