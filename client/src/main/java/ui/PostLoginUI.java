@@ -161,12 +161,20 @@ public class PostLoginUI {
                 orderedMapOfGames.put(count, game);
                 count++;
             }
-            orderedMapOfGames.forEach((id, gameData) -> toTerminal(out,
-                            "Game ID:"+id +
-                            ", Game Name: "+ gameData.gameName() +
-                            ", White Player: "+ (gameData.whiteUsername() != null ? gameData.whiteUsername() :SET_TEXT_COLOR_GREEN+ "{ AVAILABLE }" +SET_TEXT_COLOR_WHITE)+
-                            ", Black Player: "+ (gameData.blackUsername() != null ? gameData.blackUsername() : SET_TEXT_COLOR_GREEN+ "{ AVAILABLE }" +SET_TEXT_COLOR_WHITE)
-                    ));
+            orderedMapOfGames.forEach((id, gameData) -> {
+                if (!gameData.game().getGameOver()) {
+                    toTerminal(out,
+                            "Game ID: " + id +
+                                    ", Game Name: " + gameData.gameName() +
+                                    ", White Player: " + (gameData.whiteUsername() != null ? gameData.whiteUsername() : SET_TEXT_COLOR_GREEN+"{ AVAILABLE }"+SET_TEXT_COLOR_WHITE)+
+                                    ", Black Player: " + (gameData.blackUsername() != null ? gameData.blackUsername() : SET_TEXT_COLOR_GREEN+"{ AVAILABLE }"+SET_TEXT_COLOR_WHITE));
+                } else {
+                    String winner = gameData.game().getWhoWonPlayerName();
+                    toTerminal(out,
+                            "Game ID: " + id + " Game Over! Winner: " +SET_TEXT_COLOR_ORANGE+ (winner != null ? winner : "TIE"+SET_TEXT_COLOR_WHITE)
+                    );
+                }
+            });
             return userStatus=UserStatus.LOGGEDIN;
         } catch (Exception e) {
             toTerminal(out,"Game Listing failed: " + e.getMessage());
@@ -187,10 +195,10 @@ public class PostLoginUI {
             String whitePlayer = gameToBeJoined.whiteUsername();
 
             if (blackplayer == null) {
-                blackplayer = "{ AVAILABLE }";
+                blackplayer = SET_TEXT_COLOR_GREEN+"{ AVAILABLE }"+SET_TEXT_COLOR_WHITE;
             }
             if (whitePlayer == null) {
-                whitePlayer = "{ AVAILABLE }";
+                whitePlayer = SET_TEXT_COLOR_GREEN+"{ AVAILABLE }"+SET_TEXT_COLOR_WHITE;
             }
 
 
@@ -227,9 +235,10 @@ public class PostLoginUI {
 
     private UserStatus observeGame	(){
         setHelpText(out);
-        out.println("Please enter the ID number of the game you would like to Observe -->");
+        toTerminal(out,"Please enter the ID number of the game you would like to Observe -->");
         try {
             Scanner in = new Scanner(System.in);
+            out.print(SET_TEXT_BOLD+SET_TEXT_COLOR_WHITE+">>>");
             String gameID = in.nextLine();
 
 
@@ -237,6 +246,7 @@ public class PostLoginUI {
 
             UserGameCommand command = new UserGameCommand(InteractiveUI.currentToken);
             command.setCommandType(UserGameCommand.CommandType.CONNECT);
+            command.setGameID(gametoWatch.gameID());
             websocket.send(new Gson().toJson(command));
 
 

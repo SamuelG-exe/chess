@@ -11,7 +11,7 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
 
     private Session session;
 
-    private ServerMessageObserver notificationManager;
+    private final ServerMessageObserver notificationManager;
 
 
     public WebSocketFacade(String url, ServerMessageObserver notificationManager) throws Exception {
@@ -22,8 +22,7 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
         this.notificationManager = notificationManager;
     }
 
-    @Override
-    public void onOpen(Session session, EndpointConfig endpointConfig) {
+    @Override    public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
     @Override

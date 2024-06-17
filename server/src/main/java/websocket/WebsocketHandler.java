@@ -2,6 +2,7 @@ package websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import dataaccess.DataAccessException;
 import dataaccess.dao.AuthDAO;
 import dataaccess.dao.GameDAO;
@@ -128,8 +129,12 @@ public class WebsocketHandler {
         String token = command.getAuthString();
         String gameID = command.getGameID();
 
+
         AuthData currntUser= authTokensDAO.getAuth(token);
         GameData currntGame = gameDAO.getGame(gameID);
+
+        ChessPiece movedPiece = currntGame.game().getBoard().getPiece(move.getStartPosition());
+
 
         String whiteUsername = currntGame.whiteUsername();
         String blackUsername = currntGame.blackUsername();
@@ -154,7 +159,7 @@ public class WebsocketHandler {
             gameManager.broadcastAll(gameID, loadNotification);
 
 
-            message = String.format("%s has made a Move", currntUser.username());
+            message = String.format("%s has made a Move! The move was: "+movedPiece.getPieceType()+" at "+move.getStartPosition().getRow()+" "+move.getStartPosition().getColumn()+" to "+ move.getEndPosition(), currntUser.username());
             var notification = new ServerMessageNotification(message);
             gameManager.broadcast(gameID, token, notification);
 
@@ -188,6 +193,13 @@ public class WebsocketHandler {
                 session.getRemote().sendString(message);
             } else {
                 currntGame.game().setGameOver(true);
+
+                if(userName.equals(whiteUsername)){
+                    currntGame.game().setWhoWon(ChessGame.TeamColor.BLACK);
+                    currntGame.game().setWhoWonPlayerName(blackUsername);
+                }
+                else {currntGame.game().setWhoWon(ChessGame.TeamColor.WHITE);
+                    currntGame.game().setWhoWonPlayerName(whiteUsername);}
 
                 gameDAO.updateGame(gameID, currntGame);
 
@@ -233,29 +245,35 @@ public class WebsocketHandler {
             message = String.format("%s has Won the game! White is in Checkmate", currntGame.blackUsername());
             var notificationOfGameState = new ServerMessageNotification(message);
             currntGame.game().setGameOver(true);
+            currntGame.game().setWhoWon(ChessGame.TeamColor.BLACK);
+            currntGame.game().setWhoWonPlayerName(currntGame.blackUsername());
+
             gameDAO.updateGame(gameID, currntGame);
             gameManager.broadcastAll(gameID, notificationOfGameState);
         }
-        if(currntGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
+        else if(currntGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
             message = String.format("%s has Won the game! Black is in Checkmate", currntGame.whiteUsername());
             var notificationOfGameState = new ServerMessageNotification(message);
             currntGame.game().setGameOver(true);
+            currntGame.game().setWhoWon(ChessGame.TeamColor.WHITE);
+            currntGame.game().setWhoWonPlayerName(currntGame.whiteUsername());
+
             gameDAO.updateGame(gameID, currntGame);
             gameManager.broadcastAll(gameID, notificationOfGameState);
         }
-        if(currntGame.game().isInStalemate(ChessGame.TeamColor.WHITE)|| currntGame.game().isInStalemate(ChessGame.TeamColor.BLACK)){
+        else if(currntGame.game().isInStalemate(ChessGame.TeamColor.WHITE)|| currntGame.game().isInStalemate(ChessGame.TeamColor.BLACK)){
             message = ("Tie! Stalemate!");
             var notificationOfGameState = new ServerMessageNotification(message);
             currntGame.game().setGameOver(true);
             gameDAO.updateGame(gameID, currntGame);
             gameManager.broadcastAll(gameID, notificationOfGameState);
         }
-        if(currntGame.game().isInCheck(ChessGame.TeamColor.WHITE)){
+        else if(currntGame.game().isInCheck(ChessGame.TeamColor.WHITE)){
             message = ("White is in check!");
             var notificationOfGameState = new ServerMessageNotification(message);
             gameManager.broadcastAll(gameID, notificationOfGameState);
         }
-        if(currntGame.game().isInCheck(ChessGame.TeamColor.BLACK)){
+        else if(currntGame.game().isInCheck(ChessGame.TeamColor.BLACK)){
             message = ("Black is in check!");
             var notificationOfGameState = new ServerMessageNotification(message);
             gameManager.broadcastAll(gameID, notificationOfGameState);

@@ -61,7 +61,7 @@ public class PreLoginUI {
 
 
         setHelpText(out);
-        out.print("          ----help---- ");
+        toTerminal(out,"          ----help---- ");
         for(int i = 0; i <= buffer; i++){
             out.print("\u2003");
         }
@@ -69,7 +69,7 @@ public class PreLoginUI {
 
         setHelpText(out);
         buffer =( longetString - "Type \"quit\" to exit the program".length())/2;
-        out.print("Type \"quit\" to exit the program       ");
+        toTerminal(out,"Type \"quit\" to exit the program       ");
         for(int i = 0; i <= buffer; i++){
             out.print("\u2003");
         }
@@ -77,7 +77,7 @@ public class PreLoginUI {
 
         setHelpText(out);
         buffer =( longetString - "Type \"login\" to Login by imputing your UserName and Password".length())/2;
-        out.print("Type \"login\" to Login by imputing your UserName and Password  ");
+        toTerminal(out,"Type \"login\" to Login by imputing your UserName and Password  ");
         for(int i = 0; i <= buffer; i++){
             out.print("\u2003");
         }

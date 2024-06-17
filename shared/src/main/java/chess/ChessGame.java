@@ -15,6 +15,11 @@ import static java.lang.Math.abs;
  */
 public class ChessGame {
 
+
+    private TeamColor whoWon;
+
+    private String whoWonPlayerName;
+
     private TeamColor turn;
     private ChessBoard gameBoard;
 
@@ -58,6 +63,22 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         this.turn = team;
+    }
+
+    public TeamColor getWhoWon() {
+        return whoWon;
+    }
+
+    public void setWhoWon(TeamColor whoWon) {
+        this.whoWon = whoWon;
+    }
+
+    public String getWhoWonPlayerName() {
+        return whoWonPlayerName;
+    }
+
+    public void setWhoWonPlayerName(String whoWonPlayerName) {
+        this.whoWonPlayerName = whoWonPlayerName;
     }
 
     /**

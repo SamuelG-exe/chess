@@ -11,7 +11,7 @@ import static java.lang.Math.abs;
  * signature of the existing methods.
  */
 public class ChessPosition {
-    String columns = "ABCDEFG";
+    String columns = "ABCDEFGH";
 
     private int row;
     private int col;
