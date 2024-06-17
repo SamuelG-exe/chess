@@ -158,7 +158,7 @@ public class WebsocketHandler {
             var notification = new ServerMessageNotification(message);
             gameManager.broadcast(gameID, token, notification);
 
-            postMoveUpdate(currntGame, gameID);
+            //postMoveUpdate(currntGame, gameID);
         }
     }
 
